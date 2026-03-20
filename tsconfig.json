@@ -1,0 +1,37 @@
+{
+  "compilerOptions": {
+    "target": "ES6",
+    "module": "CommonJS",
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+
+    "baseUrl": "./src",
+    "paths": {
+      "@controllers/*": ["controllers/*"],
+      "@services/*": ["services/*"],
+      "@repositories/*": ["repositories/*"],
+      "@routes/*": ["routes/*"],
+      "@middlewares/*": ["middlewares/*"],
+      "@utils/*": ["utils/*"],
+      "@config/*": ["config/*"],
+      "@app-types/*": ["types/*"],
+      "@constants/*": ["constants/*"],
+      "@dtos/*": ["dtos/*"],
+      "@jobs/*": ["jobs/*"],
+      "@mappers/*": ["mappers/*"],
+      "@models/*": ["models/*"],
+      "@seeds/*": ["seeds/*"],
+      "@sockets/*": ["sockets/*"],
+      "@templates/*": ["templates/*"]
+
+    }
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules"]
+}

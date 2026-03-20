@@ -1,0 +1,17 @@
+export const mapComplaintToResponse = (complaint: any) => ({
+  id: complaint._id,
+  bookingId: complaint.bookingId,
+  carId: complaint.carId,
+  raisedBy: complaint.raisedBy,
+  raisedByRole: complaint.raisedByRole,
+  title: complaint.title,
+  description: complaint.description,
+  category: complaint.category,
+  status: complaint.status,
+  priority: complaint.priority,
+  complaintProof: complaint.complaintProof,
+  adminResponse: complaint.adminResponse || null,
+  resolvedAt: complaint.resolvedAt || null,
+  createdAt: complaint.createdAt,
+  updatedAt: complaint.updatedAt,
+});
