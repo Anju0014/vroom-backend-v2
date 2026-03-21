@@ -1,6 +1,5 @@
 import { createLogger, format, transports } from 'winston';
 import 'winston-daily-rotate-file';
-
 import DailyRotateFile from 'winston-daily-rotate-file';
 
 const logger = createLogger({
@@ -12,12 +11,14 @@ const logger = createLogger({
     format.json()
   ),
   defaultMeta: { service: 'vroom-backend' },
+
   transports: [
     new transports.Console(),
     new DailyRotateFile({
       filename: 'logs/%DATE%-error.log',
       datePattern: 'YYYY-MM-DD',
-      maxFiles: '5d',
+      level: 'error',
+      maxFiles: '1d',
       zippedArchive: true,
       auditFile: 'logs/audit-error.json',
     }),
@@ -25,7 +26,8 @@ const logger = createLogger({
     new DailyRotateFile({
       filename: 'logs/%DATE%-combined.log',
       datePattern: 'YYYY-MM-DD',
-      maxFiles: '3d',
+      level: 'info',
+      maxFiles: '1d',
       zippedArchive: true,
       auditFile: 'logs/audit-combined.json',
     }),

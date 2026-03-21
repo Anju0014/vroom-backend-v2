@@ -185,18 +185,23 @@ class CustomerRentalController implements ICustomerRentalController {
 
   async createPendingBooking(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
+      logger.info('pending creation')
       const bookingId = await this._customerRentalService.createPendingBooking(req.body);
-      logger.info(bookingId);
       res.status(StatusCode.CREATED).json({ success: true, bookingId });
     } catch (error) {
       next(error);
     }
   }
   async updatePendingBooking(req: Request, res: Response, next: NextFunction): Promise<void> {
+    logger.info(' update pending booking');
     try {
       const { bookingId } = req.params;
       const { status } = req.body;
 
+      console.log(bookingId);
+      if (!bookingId) {
+        console.log('errorat updatepending');
+      }
       if (!status) {
         throw new ApiError(StatusCode.NOT_FOUND, MESSAGES.ERROR.MISSING_FIELDS);
       }

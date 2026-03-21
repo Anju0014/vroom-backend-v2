@@ -90,6 +90,7 @@ class CustomerRentalService implements ICustomerRentalService {
 
     const conflict = await this._customerRentalRepository.findConflictingBooking(carId, start, end);
     if (conflict && conflict.userId.toString() !== userId) {
+      console.log('conflict');
       throw new ApiError(StatusCode.BAD_REQUEST, 'Car is not available for the selected dates');
     }
 
@@ -102,11 +103,13 @@ class CustomerRentalService implements ICustomerRentalService {
 
     const now = new Date();
     const lockDuration = 10 * 60 * 1000;
-
+    console.log('existing', existingBooking);
     if (existingBooking && existingBooking.lockedUntil && existingBooking?.lockedUntil > now) {
+      console.log('existing');
       existingBooking.lockedUntil = new Date(now.getTime() + lockDuration);
       await existingBooking.save();
       if (!existingBooking._id) {
+        console.log('erro in existing');
         throw new ApiError(StatusCode.BAD_REQUEST, ' Error in retreiving the old Booking');
       }
       return existingBooking._id.toString();
@@ -120,7 +123,10 @@ class CustomerRentalService implements ICustomerRentalService {
       lockedUntil: new Date(now.getTime() + lockDuration),
     });
 
+    console.log('booking.-id', booking._id);
+    console.log('booking', booking);
     if (!booking || !booking._id) {
+      console.log('checking booking error');
       throw new ApiError(StatusCode.BAD_REQUEST, 'Error creating the booking');
     }
     return booking._id.toString();

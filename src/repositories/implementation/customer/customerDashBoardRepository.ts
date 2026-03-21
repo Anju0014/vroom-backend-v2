@@ -16,7 +16,10 @@ class CustomerDashBoardRepository
   }
 
   async findBookingsByUserId(userId: string, page: number, limit: number): Promise<any[]> {
-    const bookings = await Booking.find({ userId, status: { $ne: 'pending' } })
+    const bookings = await Booking.find({
+      userId,
+      status: { $nin: ['pending', 'failed', 'agreementAccepted'] },
+    })
       .populate({
         path: 'carId',
         select: 'carName brand location.address location.coordinates.coordinates rcBookNo',
@@ -53,7 +56,10 @@ class CustomerDashBoardRepository
   }
 
   async bookingsByUserCount(userId: string): Promise<number> {
-    const count = await Booking.countDocuments({ userId }).exec();
+    const count = await Booking.countDocuments({
+      userId,
+      status: { $nin: ['pending', 'failed', 'agreementAccepted'] },
+    }).exec();
     logger.info('Total bookings count:', count);
     return count;
   }

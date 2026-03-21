@@ -37,7 +37,7 @@ interface IBooking extends Document<Types.ObjectId> {
 
 const BookingSchema = new Schema<IBooking>(
   {
-    bookingId: { type: String, unique: true },
+    bookingId: { type: String, unique: true, sparse: true },
     carId: { type: Schema.Types.ObjectId, ref: 'Car', required: true },
     userId: { type: Schema.Types.ObjectId, ref: 'customer', required: true },
     carOwnerId: { type: Schema.Types.ObjectId, ref: 'CarOwner', required: true },

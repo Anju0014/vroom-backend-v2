@@ -149,7 +149,8 @@ class CustomerRentalRepository extends BaseRepository<ICar> implements ICustomer
   }
 
   async createBooking(data: BookingData): Promise<IBooking> {
-    return Booking.create(data);
+    const booking = await Booking.create(data);
+    return booking;
   }
 
   async findBookingById(bookingId: string): Promise<IBooking | null> {

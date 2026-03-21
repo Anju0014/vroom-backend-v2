@@ -23,7 +23,7 @@ class AdminOwnerRepository extends BaseRepository<IAdmin> implements IAdminOwner
   ): Promise<{ carOwners: ICarOwner[]; total: number }> {
     try {
       const filter = {
-        processStatus: 1,
+        processStatus: 2,
         verifyStatus: 0,
         ...buildSearchQuery(search, ['fullName', 'email', 'phoneNumber']),
       };
