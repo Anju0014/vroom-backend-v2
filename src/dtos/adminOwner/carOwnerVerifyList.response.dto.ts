@@ -1,3 +1,5 @@
+import { IAddress } from '@models/carowner/carOwnerModel';
+
 export interface OwnerVerifyListItemDTO {
   id: string;
   fullName: string;
@@ -8,6 +10,8 @@ export interface OwnerVerifyListItemDTO {
   idVerified: boolean;
   rejectionReason?: string;
   createdAt?: Date;
+  idProof?: string;
+  address?: IAddress;
 }
 
 export interface OwnerVerifyListResponseDTO {

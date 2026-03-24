@@ -117,6 +117,7 @@ class ComplaintService implements IComplaintService {
         createdAt: c.createdAt,
         raisedByRole: c.raisedByRole,
         raisedByUser,
+        complaintProof: c.complaintProof,
       };
     });
 

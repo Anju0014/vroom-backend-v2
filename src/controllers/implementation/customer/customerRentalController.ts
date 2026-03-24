@@ -185,7 +185,7 @@ class CustomerRentalController implements ICustomerRentalController {
 
   async createPendingBooking(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      logger.info('pending creation')
+      logger.info('pending creation');
       const bookingId = await this._customerRentalService.createPendingBooking(req.body);
       res.status(StatusCode.CREATED).json({ success: true, bookingId });
     } catch (error) {

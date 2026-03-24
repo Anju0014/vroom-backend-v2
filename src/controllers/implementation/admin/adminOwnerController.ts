@@ -107,6 +107,7 @@ class AdminOwnerController implements IAdminOwnerController {
       const { userId } = req.params;
       const { status, reason } = req.body;
 
+      console.log(req.body);
       if (!userId || status === undefined) {
         throw new ApiError(StatusCode.NOT_FOUND, MESSAGES.ERROR.MISSING_FIELDS);
       }

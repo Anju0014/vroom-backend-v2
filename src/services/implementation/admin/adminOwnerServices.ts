@@ -60,7 +60,7 @@ class AdminOwnerService implements IAdminOwnerService {
     search: string
   ): Promise<{ cars: ICarPopulated[]; total: number }> {
     try {
-      return await this._adminOwnerRepository.getAllCarsforVerify(page, limit, search);
+      return await this._adminOwnerRepository.getAllVerifiedCars(page, limit, search);
     } catch (error) {
       throw new ApiError(StatusCode.BAD_REQUEST, 'Failed to fetch cars');
     }
@@ -96,7 +96,7 @@ class AdminOwnerService implements IAdminOwnerService {
     let updatedUser = await this._adminOwnerRepository.updateOwnerStatus(ownerId, verifyDetails);
     logger.info('pknns', updatedUser);
     if (!updatedUser) {
-      throw new Error('Error in updating the status');
+      // throw new Error('Error in updating the status');
       throw new ApiError(StatusCode.BAD_REQUEST, 'Error in updating the status');
     }
     logger.info('useremail ', updatedUser.email);

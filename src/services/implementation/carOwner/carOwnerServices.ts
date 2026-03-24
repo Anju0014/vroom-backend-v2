@@ -220,6 +220,7 @@ class CarOwnerService implements ICarOwnerService {
       }
     }
     ownerDetails.processStatus = 2;
+    ownerDetails.verifyStatus = 0;
 
     const updatedOwner = await this._carOwnerRepository.updateCarOwner(ownerId, ownerDetails);
     if (!updatedOwner) {

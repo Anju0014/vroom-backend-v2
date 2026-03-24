@@ -21,6 +21,8 @@ export class AdminOwnerMapper {
       idVerified: owner.idVerified,
       rejectionReason: owner.rejectionReason,
       createdAt: owner.createdAt,
+      address: owner.address,
+      idProof: owner.idProof,
     };
   }
 
