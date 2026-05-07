@@ -12,8 +12,16 @@ const s3 = new S3Client({
   },
 });
 
-export const generatePresignedUrl = async (fileName: string, fileType: string) => {
-  const key = `car-images/${Date.now()}-${fileName}`;
+export const generatePresignedUrl = async (
+  fileName: string,
+  fileType: string,
+  isPublic: boolean = false
+) => {
+  const folder = isPublic ? 'public/cars' : 'private/docs';
+
+  const cleanFileName = fileName.replace(/\s+/g, '-').replace(/[()]/g, '');
+
+  const key = `${folder}/${Date.now()}-${cleanFileName}`;
 
   const command = new PutObjectCommand({
     Bucket: process.env.AWS_S3_BUCKET_NAME!,
@@ -21,8 +29,9 @@ export const generatePresignedUrl = async (fileName: string, fileType: string) =
     ContentType: fileType,
   });
 
-  const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
-  return { url, key };
+  const uploadUrl = await getSignedUrl(s3, command, { expiresIn: 60 * 5 });
+
+  return { uploadUrl, key };
 };
 
 export const generateViewPresignedUrl = async (key: string) => {
@@ -32,7 +41,7 @@ export const generateViewPresignedUrl = async (key: string) => {
   });
 
   const url = await getSignedUrl(s3, command, {
-    expiresIn: 60,
+    expiresIn: 60 * 5,
   });
 
   return { url };

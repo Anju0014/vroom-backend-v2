@@ -5,14 +5,18 @@ import { StatusCode } from '@constants/statusCode';
 const router: Router = express.Router();
 
 router.post('/generate-upload-url', async (req: Request, res: Response): Promise<void> => {
-  const { fileName, fileType } = req.body;
+  const { fileName, fileType, isPublic } = req.body;
+
   if (!fileName || !fileType) {
     res.status(StatusCode.BAD_REQUEST).json({ error: 'Missing parameters' });
     return;
   }
+
   try {
-    const { url, key } = await generatePresignedUrl(fileName, fileType);
-    res.json({ url, key });
+    const { uploadUrl, key } = await generatePresignedUrl(fileName, fileType, isPublic);
+    console.log('isPublic:', isPublic);
+    console.log('Generated key:', key);
+    res.json({ uploadUrl, key });
   } catch (error) {
     console.error(error);
     res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ error: 'Failed to generate URL' });

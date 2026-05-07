@@ -110,6 +110,7 @@ class CarOwnerCarsController implements ICarOwnerCarsController {
       }
       const cars = await this._ownerscarService.getCarsByOwner(ownerId, page, limit);
       const total = await this._ownerscarService.getCarsCount(ownerId);
+      console.log(cars);
       const carDTOs = CarMapper.toCarDTOs(cars);
       const response: CarListResponseDTO = { cars: carDTOs, total };
 
