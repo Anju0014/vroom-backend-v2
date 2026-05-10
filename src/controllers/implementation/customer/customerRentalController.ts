@@ -14,7 +14,7 @@ import crypto from 'crypto';
 import ICustomerRentalRepository from '@repositories/interfaces/customer/ICustomerRentalRepository';
 import { sendEmail } from '@utils/emailconfirm';
 import { otpTemplate } from '@templates/emailTemplates';
-import { PickupOtp } from '@models/otp/otpModel';
+import { Otp} from '@models/otp/otpModel';
 import { ApiError } from '@utils/apiError';
 
 class CustomerRentalController implements ICustomerRentalController {
@@ -358,12 +358,13 @@ class CustomerRentalController implements ICustomerRentalController {
 
     const hashedOtp = crypto.createHash('sha256').update(otp).digest('hex');
 
-    await PickupOtp.deleteMany({ bookingId: booking._id });
+    await Otp.deleteMany({ bookingId: booking._id,purpose: 'PICKUP', });
 
-    await PickupOtp.create({
+    await Otp.create({
       bookingId: booking._id,
       userId,
       otp: hashedOtp,
+      purpose: 'PICKUP',
     });
 
     await sendEmail({
@@ -390,10 +391,11 @@ class CustomerRentalController implements ICustomerRentalController {
 
     const hashedOtp = crypto.createHash('sha256').update(otp).digest('hex');
 
-    const otpRecord = await PickupOtp.findOne({
+    const otpRecord = await Otp.findOne({
       bookingId: booking._id,
       userId,
       otp: hashedOtp,
+      purpose: 'PICKUP',
     });
 
     if (!otpRecord) {
@@ -403,7 +405,7 @@ class CustomerRentalController implements ICustomerRentalController {
     booking.pickupVerified = true;
     await booking.save();
 
-    await PickupOtp.deleteMany({ bookingId: booking._id });
+    await Otp.deleteMany({ bookingId: booking._id , purpose: 'PICKUP',});
 
     res.json({ message: 'Pickup verified successfully' });
   }

@@ -8,6 +8,7 @@ import { otpTemplate } from '@templates/emailTemplates';
 import logger from '@utils/logger';
 import { ApiError } from '@utils/apiError';
 import { StatusCode } from '@constants/statusCode';
+import { Otp } from '@models/otp/otpModel';
 
 class CustomerService implements ICustomerService {
   private _customerRepository: ICustomerRepository;
@@ -36,16 +37,23 @@ class CustomerService implements ICustomerService {
     const hashedPassword = await PasswordUtils.hashPassword(password);
 
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    const otpExpires = new Date();
-    otpExpires.setMinutes(otpExpires.getMinutes() + 5);
+
+    await Otp.deleteMany({
+    email,
+    purpose: 'SIGNUP',
+  });
+
+  await Otp.create({
+    email,
+    otp,
+    purpose: 'SIGNUP',
+  });
 
     const customer = await this._customerRepository.create({
       fullName,
       email,
       password: hashedPassword,
       phoneNumber,
-      otp,
-      otpExpires,
       processStatus: 0,
     });
 
@@ -72,20 +80,45 @@ class CustomerService implements ICustomerService {
       throw new ApiError(StatusCode.BAD_REQUEST, 'User not found');
     }
 
-    if (!customer.otp || customer.otp !== otp) {
-      throw new ApiError(StatusCode.BAD_REQUEST, 'Invalid OTP');
-    }
+    const existingOtp = await Otp.findOne({
+    email,
+    purpose: 'SIGNUP',
+  });
 
-    if (!customer.otpExpires || new Date() > customer.otpExpires) {
-      throw new ApiError(StatusCode.BAD_REQUEST, 'OTP has expired');
-    }
+  
+  if (!existingOtp) {
+    throw new ApiError(
+      StatusCode.BAD_REQUEST,
+      'OTP expired or not found'
+    );
+  }
+
+  
+  if (existingOtp.otp !== otp) {
+    throw new ApiError(
+      StatusCode.BAD_REQUEST,
+      'Invalid OTP'
+    );
+  }
+    // if (!customer.otp || customer.otp !== otp) {
+    //   throw new ApiError(StatusCode.BAD_REQUEST, 'Invalid OTP');
+    // }
+
+    // if (!customer.otpExpires || new Date() > customer.otpExpires) {
+    //   throw new ApiError(StatusCode.BAD_REQUEST, 'OTP has expired');
+    // }
 
     customer.processStatus = 2;
     customer.verifyStatus = 1;
-    customer.otp = null;
-    customer.otpExpires = null;
+    // customer.otp = null;
+    // customer.otpExpires = null;
 
+    
     await this._customerRepository.updateCustomer(customer._id.toString(), customer);
+
+    await Otp.deleteOne({
+    _id: existingOtp._id,
+  });
 
     logger.info('User OTP verified successfully!');
 
@@ -99,11 +132,17 @@ class CustomerService implements ICustomerService {
       throw new ApiError(StatusCode.BAD_REQUEST, 'User not found');
     }
     const newOtp = Math.floor(100000 + Math.random() * 90000).toString();
-    const otpExpires = new Date();
-    otpExpires.setMinutes(otpExpires.getMinutes() + 5);
+   
+     await Otp.deleteMany({
+    email,
+    purpose: 'SIGNUP',
+  });
 
-    customer.otp = newOtp;
-    customer.otpExpires = otpExpires;
+  await Otp.create({
+    email,
+    otp: newOtp,
+    purpose: 'SIGNUP',
+  });
 
     await this._customerRepository.updateCustomer(customer._id.toString(), customer);
 

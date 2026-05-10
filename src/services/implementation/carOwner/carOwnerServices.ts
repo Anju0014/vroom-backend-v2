@@ -12,6 +12,7 @@ import { INotificationService } from '@services/interfaces/notification/INotific
 import logger from '@utils/logger';
 import { ApiError } from '@utils/apiError';
 import { StatusCode } from '@constants/statusCode';
+import { Otp } from '@models/otp/otpModel';
 
 class CarOwnerService implements ICarOwnerService {
   private _carOwnerRepository: ICarOwnerRepository;
@@ -28,100 +29,230 @@ class CarOwnerService implements ICarOwnerService {
     this._notificationService = notificationService;
   }
 
+  // async registerBasicDetails(
+  //   carOwnerDetails: Partial<ICarOwner>
+  // ): Promise<{ carOwner: ICarOwner }> {
+  //   const { fullName, email, password, phoneNumber } = carOwnerDetails;
+  //   logger.info(carOwnerDetails);
+
+  //   if (!fullName || !email || !password) {
+  //     logger.warn('missing fields for registration ');
+  //     throw new ApiError(StatusCode.BAD_REQUEST, 'All fields are required');
+  //   }
+
+  //   const existingUser = await this._carOwnerRepository.findUserByEmail(carOwnerDetails.email!);
+
+  //   if (existingUser) {
+  //     logger.warn('User already exists. Throwing error...');
+  //     throw new ApiError(StatusCode.BAD_REQUEST, 'Email already Exist');
+  //   }
+
+  //   const hashedPassword = await PasswordUtils.hashPassword(password);
+
+  //   const otp = Math.floor(100000 + Math.random() * 900000).toString();
+  //   const otpExpires = new Date();
+  //   otpExpires.setMinutes(otpExpires.getMinutes() + 5);
+
+  //   const carOwner = await this._carOwnerRepository.create({
+  //     fullName,
+  //     email,
+  //     password: hashedPassword,
+  //     phoneNumber,
+  //     otp,
+  //     otpExpires,
+  //     processStatus: 0,
+  //   });
+
+  //   const otpContent = otpTemplate(otp);
+  //   await sendEmail({ to: email, ...otpContent });
+
+  //   logger.info('create new carOwner: ', carOwner);
+  //   return { carOwner };
+  // }
+
   async registerBasicDetails(
-    carOwnerDetails: Partial<ICarOwner>
-  ): Promise<{ carOwner: ICarOwner }> {
-    const { fullName, email, password, phoneNumber } = carOwnerDetails;
-    logger.info(carOwnerDetails);
+  carOwnerDetails: Partial<ICarOwner>
+): Promise<{ carOwner: ICarOwner }> {
 
-    if (!fullName || !email || !password) {
-      logger.warn('missing fields for registration ');
-      throw new ApiError(StatusCode.BAD_REQUEST, 'All fields are required');
-    }
+  const { fullName, email, password, phoneNumber } = carOwnerDetails;
 
-    const existingUser = await this._carOwnerRepository.findUserByEmail(carOwnerDetails.email!);
-
-    if (existingUser) {
-      logger.warn('User already exists. Throwing error...');
-      throw new ApiError(StatusCode.BAD_REQUEST, 'Email already Exist');
-    }
-
-    const hashedPassword = await PasswordUtils.hashPassword(password);
-
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    const otpExpires = new Date();
-    otpExpires.setMinutes(otpExpires.getMinutes() + 5);
-
-    const carOwner = await this._carOwnerRepository.create({
-      fullName,
-      email,
-      password: hashedPassword,
-      phoneNumber,
-      otp,
-      otpExpires,
-      processStatus: 0,
-    });
-
-    const otpContent = otpTemplate(otp);
-    await sendEmail({ to: email, ...otpContent });
-
-    logger.info('create new carOwner: ', carOwner);
-    return { carOwner };
+  if (!fullName || !email || !password) {
+    throw new ApiError(StatusCode.BAD_REQUEST, 'All fields are required');
   }
 
-  async otpVerify(email: string, otp: string): Promise<{ carOwner: ICarOwner }> {
-    logger.info(`Verifying OTP for ${email}: ${otp}`);
+  const existingUser = await this._carOwnerRepository.findUserByEmail(email);
 
-    const carOwner = await this._carOwnerRepository.findUserByEmail(email);
-
-    if (!carOwner) {
-      throw new ApiError(StatusCode.BAD_REQUEST, 'User not found');
-    }
-
-    logger.info('Fetched carOwner from DB:', carOwner);
-    if (!carOwner) {
-      throw new ApiError(StatusCode.BAD_REQUEST, 'User not found');
-    }
-
-    if (!carOwner.otp || carOwner.otp !== otp) {
-      throw new ApiError(StatusCode.BAD_REQUEST, 'Invalid OTP');
-    }
-
-    if (!carOwner.otpExpires || new Date() > carOwner.otpExpires) {
-      throw new ApiError(StatusCode.BAD_REQUEST, 'OTP has expired');
-    }
-
-    carOwner.processStatus = 1;
-    carOwner.otp = null;
-    carOwner.otpExpires = null;
-
-    await this._carOwnerRepository.updateCarOwner(carOwner._id.toString(), carOwner);
-
-    logger.info('User OTP verified successfully!');
-    return { carOwner };
+  if (existingUser) {
+    throw new ApiError(StatusCode.BAD_REQUEST, 'Email already exists');
   }
+
+  const hashedPassword = await PasswordUtils.hashPassword(password);
+
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+  await Otp.deleteMany({
+    email,
+    purpose: 'SIGNUP',
+  });
+
+  await Otp.create({
+    email,
+    otp,
+    purpose: 'SIGNUP',
+  });
+
+  const carOwner = await this._carOwnerRepository.create({
+    fullName,
+    email,
+    password: hashedPassword,
+    phoneNumber,
+    processStatus: 0,
+  });
+
+  const otpContent = otpTemplate(otp);
+
+  await sendEmail({
+    to: email,
+    ...otpContent,
+  });
+
+  return { carOwner };
+}
+  // async otpVerify(email: string, otp: string): Promise<{ carOwner: ICarOwner }> {
+  //   logger.info(`Verifying OTP for ${email}: ${otp}`);
+
+  //   const carOwner = await this._carOwnerRepository.findUserByEmail(email);
+
+  //   if (!carOwner) {
+  //     throw new ApiError(StatusCode.BAD_REQUEST, 'User not found');
+  //   }
+
+  //   logger.info('Fetched carOwner from DB:', carOwner);
+  //   if (!carOwner) {
+  //     throw new ApiError(StatusCode.BAD_REQUEST, 'User not found');
+  //   }
+
+  //   if (!carOwner.otp || carOwner.otp !== otp) {
+  //     throw new ApiError(StatusCode.BAD_REQUEST, 'Invalid OTP');
+  //   }
+
+  //   if (!carOwner.otpExpires || new Date() > carOwner.otpExpires) {
+  //     throw new ApiError(StatusCode.BAD_REQUEST, 'OTP has expired');
+  //   }
+
+  //   carOwner.processStatus = 1;
+  //   carOwner.otp = null;
+  //   carOwner.otpExpires = null;
+
+  //   await this._carOwnerRepository.updateCarOwner(carOwner._id.toString(), carOwner);
+
+  //   logger.info('User OTP verified successfully!');
+  //   return { carOwner };
+  // }
+
+  async otpVerify(
+  email: string,
+  otp: string
+): Promise<{ carOwner: ICarOwner }> {
+
+  const carOwner = await this._carOwnerRepository.findUserByEmail(email);
+
+  if (!carOwner) {
+    throw new ApiError(StatusCode.BAD_REQUEST, 'User not found');
+  }
+
+  const existingOtp = await Otp.findOne({
+    email,
+    purpose: 'SIGNUP',
+  });
+
+
+  if (!existingOtp) {
+    throw new ApiError(
+      StatusCode.BAD_REQUEST,
+      'OTP expired or not found'
+    );
+  }
+
+
+  if (existingOtp.otp !== otp) {
+    throw new ApiError(
+      StatusCode.BAD_REQUEST,
+      'Invalid OTP'
+    );
+  }
+
+  carOwner.processStatus = 1;
+
+  await this._carOwnerRepository.updateCarOwner(
+    carOwner._id.toString(),
+    carOwner
+  );
+
+  await Otp.deleteOne({
+    _id: existingOtp._id,
+  });
+
+  return { carOwner };
+}
+
+  // async resendOtp(email: string): Promise<{ message: string }> {
+  //   logger.info(`Resending OTP for email: ${email}`);
+  //   const carOwner = await this._carOwnerRepository.findUserByEmail(email);
+  //   if (!carOwner) {
+  //     throw new ApiError(StatusCode.BAD_REQUEST, 'User not found');
+  //   }
+  //   const newOtp = Math.floor(100000 + Math.random() * 90000).toString();
+  //   const otpExpires = new Date();
+  //   otpExpires.setMinutes(otpExpires.getMinutes() + 5);
+
+  //   carOwner.otp = newOtp;
+  //   carOwner.otpExpires = otpExpires;
+
+  //   await this._carOwnerRepository.updateCarOwner(carOwner._id.toString(), carOwner);
+
+  //   const otpContent = otpTemplate(newOtp);
+  //   await sendEmail({ to: carOwner.email, ...otpContent });
+
+  //   logger.info('New OTP sent Successfully');
+  //   return { message: 'OTP resend successfully' };
+  // }
 
   async resendOtp(email: string): Promise<{ message: string }> {
-    logger.info(`Resending OTP for email: ${email}`);
-    const carOwner = await this._carOwnerRepository.findUserByEmail(email);
-    if (!carOwner) {
-      throw new ApiError(StatusCode.BAD_REQUEST, 'User not found');
-    }
-    const newOtp = Math.floor(100000 + Math.random() * 90000).toString();
-    const otpExpires = new Date();
-    otpExpires.setMinutes(otpExpires.getMinutes() + 5);
 
-    carOwner.otp = newOtp;
-    carOwner.otpExpires = otpExpires;
+  const carOwner = await this._carOwnerRepository.findUserByEmail(email);
 
-    await this._carOwnerRepository.updateCarOwner(carOwner._id.toString(), carOwner);
-
-    const otpContent = otpTemplate(newOtp);
-    await sendEmail({ to: carOwner.email, ...otpContent });
-
-    logger.info('New OTP sent Successfully');
-    return { message: 'OTP resend successfully' };
+  if (!carOwner) {
+    throw new ApiError(StatusCode.BAD_REQUEST, 'User not found');
   }
+
+  const newOtp = Math.floor(
+    100000 + Math.random() * 900000
+  ).toString();
+
+  await Otp.deleteMany({
+    email,
+    purpose: 'SIGNUP',
+  });
+
+  await Otp.create({
+    email,
+    otp: newOtp,
+    purpose: 'SIGNUP',
+  });
+
+  const otpContent = otpTemplate(newOtp);
+
+  await sendEmail({
+    to: carOwner.email,
+    ...otpContent,
+  });
+
+  return {
+    message: 'OTP resent successfully',
+  };
+}
+
 
   async loginCarOwner(
     email: string,
