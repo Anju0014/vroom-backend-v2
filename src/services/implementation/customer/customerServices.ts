@@ -1,7 +1,7 @@
 import ICustomerRepository from '@repositories/interfaces/customer/ICustomerRepository';
 import { ICustomerService } from '@services/interfaces/customer/ICustomerServices';
 import { sendEmail, sendResetEmail } from '@utils/emailconfirm';
-import { ICustomer } from '@models/customer/customerModel';
+import { IAddress, ICustomer } from '@models/customer/customerModel';
 import PasswordUtils from '@utils/passwordUtils';
 import JwtUtils from '@utils/jwtUtils';
 import { otpTemplate } from '@templates/emailTemplates';
@@ -329,9 +329,15 @@ class CustomerService implements ICustomerService {
     }
 
     if (updatedData.address) {
-      const requiredFields = ['addressLine1', 'city', 'state', 'postalCode', 'country'];
+      const requiredFields: (keyof IAddress)[] = [
+        'addressLine1',
+        'city',
+        'state',
+        'postalCode',
+        'country',
+      ];
       for (const field of requiredFields) {
-        if (!(updatedData.address as any)[field]) {
+        if (!updatedData.address[field]) {
           throw new ApiError(StatusCode.BAD_REQUEST, `Missing address field: ${field}`);
         }
       }

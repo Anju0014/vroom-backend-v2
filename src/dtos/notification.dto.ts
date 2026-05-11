@@ -18,7 +18,7 @@ export class CreateNotificationDto {
   type!: string;
 
   @IsOptional()
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 export class NotificationResponseDto {
   @Expose() id!: string;
@@ -29,7 +29,7 @@ export class NotificationResponseDto {
   @Expose() type!: string;
   @Expose() iconKey!: string;
   @Expose() severity!: string;
-  @Expose() metadata?: Record<string, any>;
+  @Expose() metadata?: Record<string, unknown>;
   @Expose() isRead!: boolean;
   @Expose() @Type(() => Date) createdAt!: Date;
 }

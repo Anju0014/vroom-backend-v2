@@ -4,7 +4,7 @@ import { Car, ICar } from '@models/car/carModel';
 import { Booking, IBooking } from '@models/booking/bookingModel';
 import { IWallet, Wallet } from '@models/wallet/walletModel';
 import logger from '@utils/logger';
-import mongoose, { Types } from 'mongoose';
+import mongoose, { FilterQuery, Types } from 'mongoose';
 import { CarOwner } from '@models/carowner/carOwnerModel';
 
 class CarOwnerBookingRepository extends BaseRepository<ICar> implements ICarOwnerBookingRepository {
@@ -19,7 +19,7 @@ class CarOwnerBookingRepository extends BaseRepository<ICar> implements ICarOwne
     search?: string,
     status?: string
   ): Promise<{ bookings: IBooking[]; total: number }> {
-    const query: any = {
+    const query: FilterQuery<IBooking> = {
       carOwnerId,
       status: { $in: ['confirmed', 'cancelled'] },
     };

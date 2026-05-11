@@ -125,7 +125,7 @@ class ComplaintService implements IComplaintService {
   }
 
   async updateComplaintByAdmin(complaintId: string, data: UpdateComplaintByAdminDTO) {
-    const update: any = {
+    const update: Partial<IComplaint> = {
       status: data.status,
       priority: data.priority,
       adminResponse: data.adminResponse,

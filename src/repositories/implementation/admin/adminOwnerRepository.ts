@@ -3,8 +3,8 @@ import IAdminOwnerRepository from '@repositories/interfaces/admin/IAdminOwnerRep
 import { BaseRepository } from '@repositories//base/BaseRepository';
 import { CarOwner, ICarOwner } from '@models/carowner/carOwnerModel';
 import { Car, ICar } from '@models/car/carModel';
-import { Booking } from '@models/booking/bookingModel';
-import { PipelineStage, Types } from 'mongoose';
+import { Booking, IBooking } from '@models/booking/bookingModel';
+import { FilterQuery, PipelineStage, Types } from 'mongoose';
 import { buildSearchQuery } from '@utils/queryUtils';
 import logger from '@utils/logger';
 import { ICarPopulated } from '@models/car/carTypesModel';
@@ -102,7 +102,7 @@ class AdminOwnerRepository extends BaseRepository<IAdmin> implements IAdminOwner
     search: string
   ): Promise<{ bookings: any[]; total: number }> {
     try {
-      const match: any = {
+      const match: FilterQuery<IBooking> = {
         status: { $in: ['confirmed', 'cancelled'] },
       };
 

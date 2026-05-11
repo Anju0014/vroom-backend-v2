@@ -1,7 +1,7 @@
 import ICarOwnerRepository from '@repositories/interfaces/carOwner/ICarOwnerRepository';
 import { ICarOwnerService } from '@services/interfaces/carOwner/ICarOwnerServices';
 import { sendEmail, sendResetEmail } from '@utils/emailconfirm';
-import { ICarOwner } from '@models/carowner/carOwnerModel';
+import { IAddress, ICarOwner } from '@models/carowner/carOwnerModel';
 import PasswordUtils from '@utils/passwordUtils';
 import JwtUtils from '@utils/jwtUtils';
 
@@ -324,9 +324,15 @@ class CarOwnerService implements ICarOwnerService {
     }
 
     if (ownerDetails.address) {
-      const requiredFields = ['addressLine1', 'city', 'state', 'postalCode', 'country'];
+      const requiredFields: (keyof IAddress)[] = [
+        'addressLine1',
+        'city',
+        'state',
+        'postalCode',
+        'country',
+      ];
       for (const field of requiredFields) {
-        if (!(ownerDetails.address as any)[field]) {
+        if (!ownerDetails.address[field]) {
           throw new ApiError(StatusCode.BAD_REQUEST, `Missing address field: ${field}`);
         }
       }
@@ -467,9 +473,15 @@ class CarOwnerService implements ICarOwnerService {
     }
 
     if (updatedData.address) {
-      const requiredFields = ['addressLine1', 'city', 'state', 'postalCode', 'country'];
+      const requiredFields: (keyof IAddress)[] = [
+        'addressLine1',
+        'city',
+        'state',
+        'postalCode',
+        'country',
+      ];
       for (const field of requiredFields) {
-        if (!(updatedData.address as any)[field]) {
+        if (!updatedData.address[field]) {
           throw new ApiError(StatusCode.BAD_REQUEST, `Missing address field: ${field}`);
         }
       }

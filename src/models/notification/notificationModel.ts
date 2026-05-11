@@ -9,7 +9,7 @@ interface INotification extends Document {
   type: string;
   iconKey: string;
   severity: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
   isRead: boolean;
   createdAt: Date;
 }

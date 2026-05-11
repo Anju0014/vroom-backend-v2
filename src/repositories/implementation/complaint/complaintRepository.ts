@@ -1,5 +1,6 @@
 import { Complaint, IComplaint } from '@models/complaint/complaintModel';
 import IComplaintRepository from '@repositories/interfaces/complaint/IComplaintRepository';
+import { FilterQuery } from 'mongoose';
 
 class ComplaintRepository implements IComplaintRepository {
   async create(data: Partial<IComplaint>): Promise<IComplaint> {
@@ -25,7 +26,7 @@ class ComplaintRepository implements IComplaintRepository {
     limit: number,
     search?: string
   ): Promise<{ complaints: IComplaint[]; total: number }> {
-    const query: any = {};
+    const query: FilterQuery<IComplaint> = {};
 
     if (search && search.trim()) {
       const regex = new RegExp(search.trim(), 'i');

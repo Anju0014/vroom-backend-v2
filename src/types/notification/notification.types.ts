@@ -12,5 +12,5 @@ export interface NotificationPayload {
   type: NotificationType;
   severity: NotificationSeverity;
   iconKey: NotificationIconKey;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }

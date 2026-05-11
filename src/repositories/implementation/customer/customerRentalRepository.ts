@@ -5,6 +5,7 @@ import { Car, ICar } from '@models/car/carModel';
 import { Booking, IBooking } from '@models/booking/bookingModel';
 import { Counter } from '@models/counter/counterModel';
 import { BookingData } from '@app-types/bookingData';
+import { FilterQuery } from 'mongoose';
 
 class CustomerRentalRepository extends BaseRepository<ICar> implements ICustomerRentalRepository {
   constructor() {
@@ -49,7 +50,7 @@ class CustomerRentalRepository extends BaseRepository<ICar> implements ICustomer
       endDate?: string;
     }
   ): Promise<ICar[]> {
-    const query: any = { isDeleted: false, verifyStatus: 1 };
+    const query: FilterQuery<ICar> = { isDeleted: false, verifyStatus: 1 };
 
     if (filters.search) {
       query.carName = { $regex: filters.search, $options: 'i' };
@@ -108,7 +109,7 @@ class CustomerRentalRepository extends BaseRepository<ICar> implements ICustomer
     startDate?: string;
     endDate?: string;
   }): Promise<number> {
-    const query: any = { isDeleted: false, verifyStatus: 1 };
+    const query: FilterQuery<ICar> = { isDeleted: false, verifyStatus: 1 };
 
     if (filters.search) query.carName = { $regex: filters.search, $options: 'i' };
     if (filters.minPrice) query.expectedWage = { ...query.expectedWage, $gte: filters.minPrice };
