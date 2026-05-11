@@ -1,7 +1,9 @@
+import { RegisterBasicDTO } from '@dtos/common/registerBasic.dto';
+import { CustomerDTO, CustomerProfileUpdateDTO } from '@dtos/customer/customer.dto';
 import { ICustomer } from '@models/customer/customerModel';
 
 export interface ICustomerService {
-  registerBasicDetails(customerDetails: Partial<ICustomer>): Promise<{ customer: ICustomer }>;
+  registerBasicDetails(customerDetails: Partial<ICustomer>): Promise<RegisterBasicDTO>;
   otpVerify(email: string, otp: string): Promise<{ customer: ICustomer }>;
   resendOtp(email: string): Promise<{ message: string }>;
   loginCustomer(
@@ -24,8 +26,8 @@ export interface ICustomerService {
     provider: string,
     role?: string
   ): Promise<{ accessToken: string; refreshToken: string; customer: ICustomer | null }>;
-  getCustomerProfile(customerId: string): Promise<{ customer: ICustomer }>;
-  updateCustomerProfile(customerId: string, updatedData: Partial<ICustomer>): Promise<ICustomer>;
+  getCustomerProfile(customerId: string): Promise<CustomerDTO >;
+  updateCustomerProfile(customerId: string, updatedData: Partial<ICustomer>): Promise<CustomerProfileUpdateDTO>;
   updateCustomerProfileId(customerId: string, updatedData: Partial<ICustomer>): Promise<ICustomer>;
   checkBlockStatus(userId: string): Promise<number>;
 }

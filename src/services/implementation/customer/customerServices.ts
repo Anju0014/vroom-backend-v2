@@ -9,6 +9,9 @@ import logger from '@utils/logger';
 import { ApiError } from '@utils/apiError';
 import { StatusCode } from '@constants/statusCode';
 import { Otp } from '@models/otp/otpModel';
+import { CustomerMapper } from '@mappers/customer.mapper';
+import { CustomerDTO, CustomerProfileUpdateDTO } from '@dtos/customer/customer.dto';
+import { RegisterBasicDTO } from '@dtos/common/registerBasic.dto';
 
 class CustomerService implements ICustomerService {
   private _customerRepository: ICustomerRepository;
@@ -19,7 +22,7 @@ class CustomerService implements ICustomerService {
 
   async registerBasicDetails(
     customerDetails: Partial<ICustomer>
-  ): Promise<{ customer: ICustomer }> {
+  ): Promise<RegisterBasicDTO> {
     const { fullName, email, password, phoneNumber } = customerDetails;
 
     if (!fullName || !email || !password) {
@@ -62,7 +65,7 @@ class CustomerService implements ICustomerService {
 
     logger.info('create new customer: ', customer);
 
-    return { customer };
+    return  CustomerMapper.toBasicRegisterDTO(customer) ;
   }
 
   async otpVerify(email: string, otp: string): Promise<{ customer: ICustomer }> {
@@ -322,16 +325,16 @@ class CustomerService implements ICustomerService {
     return { accessToken: customerAccessToken, refreshToken, customer };
   }
 
-  async getCustomerProfile(customerId: string): Promise<{ customer: ICustomer }> {
+  async getCustomerProfile(customerId: string): Promise< CustomerDTO> {
     const customer = await this._customerRepository.findById(customerId);
     if (!customer) throw new ApiError(StatusCode.BAD_REQUEST, 'customer not found');
-    return { customer };
+    return CustomerMapper.toDTO(customer);
   }
 
   async updateCustomerProfile(
     customerId: string,
     updatedData: Partial<ICustomer>
-  ): Promise<ICustomer> {
+  ): Promise<CustomerProfileUpdateDTO> {
     if (updatedData.phoneNumber && !/^\d{10}$/.test(updatedData.phoneNumber)) {
       throw new ApiError(StatusCode.BAD_REQUEST, 'Invalid phone number format. Must be 10 digits.');
     }
@@ -345,12 +348,12 @@ class CustomerService implements ICustomerService {
       }
     }
 
-    const updatedcustomer = await this._customerRepository.updateCustomer(customerId, updatedData);
-    if (!updatedcustomer) {
-      throw new ApiError(StatusCode.BAD_REQUEST, 'Ccustomer not found or update failed.');
+    const updatedCustomer = await this._customerRepository.updateCustomer(customerId, updatedData);
+    if (!updatedCustomer) {
+      throw new ApiError(StatusCode.BAD_REQUEST, 'Customer not found or update failed.');
     }
 
-    return updatedcustomer;
+    return CustomerMapper.toDTOUpdateProfile(updatedCustomer);
   }
 
   async updateCustomerProfileId(

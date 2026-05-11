@@ -35,10 +35,10 @@ class CustomerDashBoardController implements ICustomerDashBoardController {
       }
       const bookings = await this._customerDashService.getCustomerBookings(userId, page, limit);
       const total = await this._customerDashService.getCustomerBookingCount(userId);
-      const bookingDTOs = CustomerBookingMapper.toDTOList(bookings);
+      // const bookingDTOs = CustomerBookingMapper.toDTOList(bookings);
       res.status(StatusCode.OK).json({
         success: true,
-        bookings: bookingDTOs,
+        bookings,
         total,
       });
       return;
@@ -94,12 +94,12 @@ class CustomerDashBoardController implements ICustomerDashBoardController {
       }
 
       const total = await this._customerDashService.getCustomerWalletTransactionCount(userId);
-      const walletDTO = CustomerWalletMapper.toDTO(wallet);
+      // const walletDTO = CustomerWalletMapper.toDTO(wallet);
 
       res.status(StatusCode.OK).json({
         success: true,
         data: {
-          wallet: walletDTO,
+          wallet,
           total,
           page,
           limit,

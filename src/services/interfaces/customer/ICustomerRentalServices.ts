@@ -1,10 +1,11 @@
 import { IBooking } from '@models/booking/bookingModel';
 import { ICar } from '@models/car/carModel';
 import { BookingData } from '@app-types/bookingData';
+import { CustomerCarDTO } from '@dtos/customer/customerCar.dto';
 
 export interface ICustomerRentalService {
-  getNearbyCars(lat: number, lng: number, maxDistance: number): Promise<ICar[]>;
-  getFeaturedCars(): Promise<ICar[]>;
+  getNearbyCars(lat: number, lng: number, maxDistance: number): Promise<CustomerCarDTO[]>;
+  getFeaturedCars(): Promise<CustomerCarDTO[]>;
   getCarDetail(carId: string): Promise<ICar | null>;
   getBookedDateRanges(carId: string): Promise<{ start: Date; end: Date }[]>;
 
@@ -42,7 +43,7 @@ export interface ICustomerRentalService {
       startDate: string;
       endDate: string;
     }
-  ): Promise<ICar[]>;
+  ): Promise<CustomerCarDTO[]>;
 
   updateTrackingLocation(updateTrackingProps: {
     bookingId: string;

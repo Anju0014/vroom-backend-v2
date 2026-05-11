@@ -18,11 +18,11 @@ class CustomerContoller implements ICustomerController {
 
   async registerBasicDetails(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const { customer } = await this._customerService.registerBasicDetails(req.body);
+      const customer  = await this._customerService.registerBasicDetails(req.body);
       res.status(StatusCode.CREATED).json({
         success: true,
         message: MESSAGES.SUCCESS.OTP_SENT,
-        data: CustomerMapper.toBasicRegisterDTO(customer),
+        data: customer,
       });
     } catch (error) {
       next(error);
@@ -218,10 +218,10 @@ class CustomerContoller implements ICustomerController {
       if (!customerId) {
         throw new ApiError(StatusCode.UNAUTHORIZED, MESSAGES.ERROR.UNAUTHORIZED);
       }
-      const { customer } = await this._customerService.getCustomerProfile(customerId);
+      const customer= await this._customerService.getCustomerProfile(customerId);
       res.status(StatusCode.OK).json({
         success: true,
-        customer: CustomerMapper.toDTO(customer),
+        customer,
       });
     } catch (error) {
       next(error);
@@ -250,7 +250,7 @@ class CustomerContoller implements ICustomerController {
       res.status(StatusCode.OK).json({
         success: true,
         message: MESSAGES.SUCCESS.PROFILE_UPDATED,
-        updatedCustomer: CustomerMapper.toDTOUpdateProfile(updatedCustomer),
+        updatedCustomer,
       });
     } catch (error) {
       next(error);

@@ -16,6 +16,7 @@ import { sendEmail } from '@utils/emailconfirm';
 import { otpTemplate } from '@templates/emailTemplates';
 import { Otp} from '@models/otp/otpModel';
 import { ApiError } from '@utils/apiError';
+import CarOwnerService from '@services/implementation/carOwner/carOwnerServices';
 
 class CustomerRentalController implements ICustomerRentalController {
   private _customerRentalService: ICustomerRentalService;
@@ -46,7 +47,7 @@ class CustomerRentalController implements ICustomerRentalController {
         parseFloat(lng as string),
         parseFloat(maxDistance as string)
       );
-      res.status(StatusCode.OK).json({ success: true, data: CustomerCarMapper.toCarDTOs(cars) });
+      res.status(StatusCode.OK).json({ success: true, data: cars });
     } catch (error) {
       next(error);
     }
@@ -56,7 +57,7 @@ class CustomerRentalController implements ICustomerRentalController {
     try {
       logger.info('featuredcars');
       const cars = await this._customerRentalService.getFeaturedCars();
-      res.status(StatusCode.OK).json({ success: true, data: CustomerCarMapper.toCarDTOs(cars) });
+      res.status(StatusCode.OK).json({ success: true, data: cars });
     } catch (error) {
       next(error);
     }
@@ -106,7 +107,7 @@ class CustomerRentalController implements ICustomerRentalController {
       });
       logger.info('Cars:', cars, 'Total:', total);
 
-      res.status(StatusCode.OK).json({ data: CustomerCarMapper.toCarDTOs(cars), total });
+      res.status(StatusCode.OK).json({ data:cars, total });
     } catch (error) {
       next(error);
     }

@@ -8,6 +8,10 @@ import IWalletRepository from '@repositories/interfaces/wallet/IWalletRepository
 import IAdminRepository from '@repositories/interfaces/admin/IAdminRepository';
 import { ApiError } from '@utils/apiError';
 import { StatusCode } from '@constants/statusCode';
+import { CustomerBookingMapper } from '@mappers/customerBooking.mapper';
+import { CustomerWalletMapper } from '@mappers/customerWallet.mapper';
+import { CustomerWalletDTO } from '@dtos/transaction/customerWallet.dto';
+import { CustomerBookingDTO } from '@dtos/customer/customerBooking.dto';
 
 class CustomerDashBoardService implements ICustomerDashBoardService {
   private _customerDashRepository: ICustomerDashBoardRepository;
@@ -24,16 +28,18 @@ class CustomerDashBoardService implements ICustomerDashBoardService {
     this._adminRepository = adminRepository;
   }
 
-  async getCustomerBookings(userId: string, page: number, limit: number): Promise<any[]> {
-    return this._customerDashRepository.findBookingsByUserId(userId, page, limit);
+  async getCustomerBookings(userId: string, page: number, limit: number): Promise<CustomerBookingDTO[]> {
+    const bookings= await this._customerDashRepository.findBookingsByUserId(userId, page, limit);
+    return CustomerBookingMapper.toDTOList(bookings)
   }
 
   async getCustomerBookingCount(userId: string): Promise<number> {
     return this._customerDashRepository.bookingsByUserCount(userId);
   }
 
-  async getCustomerWallet(userId: string, page: number, limit: number) {
-    return this._customerDashRepository.findWalletByUserWithTransactions(userId, page, limit);
+  async getCustomerWallet(userId: string, page: number, limit: number): Promise<CustomerWalletDTO> {
+      const wallet= await this._customerDashRepository.findWalletByUserWithTransactions(userId, page, limit);
+       return CustomerWalletMapper.toDTO(wallet)
   }
 
   async getCustomerWalletTransactionCount(userId: string) {

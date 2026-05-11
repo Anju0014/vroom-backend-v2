@@ -12,6 +12,8 @@ import { INotificationService } from '@services/interfaces/notification/INotific
 import logger from '@utils/logger';
 import { StatusCode } from '@constants/statusCode';
 import { ApiError } from '@utils/apiError';
+import { CustomerCarMapper } from '@mappers/customerCar.mapper';
+import { CustomerCarDTO } from '@dtos/customer/customerCar.dto';
 
 class CustomerRentalService implements ICustomerRentalService {
   private _customerRentalRepository: ICustomerRentalRepository;
@@ -25,12 +27,19 @@ class CustomerRentalService implements ICustomerRentalService {
     this._notificationService = notificationService;
   }
 
-  async getNearbyCars(lat: number, lng: number, maxDistance: number): Promise<ICar[]> {
-    return this._customerRentalRepository.findNearbyCars(lat, lng, maxDistance);
+  async getNearbyCars(lat: number, lng: number, maxDistance: number): Promise<CustomerCarDTO[]> {
+   const cars = await this._customerRentalRepository.findNearbyCars(
+    lat,
+    lng,
+    maxDistance
+  );
+
+  return CustomerCarMapper.toCarDTOs(cars);
   }
 
-  async getFeaturedCars(): Promise<ICar[]> {
-    return this._customerRentalRepository.findFeaturedCars();
+  async getFeaturedCars(): Promise<CustomerCarDTO[] > {
+    const cars = await this._customerRentalRepository.findFeaturedCars();
+    return CustomerCarMapper.toCarDTOs(cars);
   }
 
   async getCarDetail(carId: string): Promise<ICar | null> {
@@ -53,8 +62,9 @@ class CustomerRentalService implements ICustomerRentalService {
       startDate: string;
       endDate: string;
     }
-  ): Promise<ICar[]> {
-    return this._customerRentalRepository.getAllCars(page, limit, filters);
+  ): Promise<CustomerCarDTO[] > {
+    const cars = await this._customerRentalRepository.getAllCars(page, limit, filters);
+    return CustomerCarMapper.toCarDTOs(cars);
   }
 
   async getCarsCount(filters: {
