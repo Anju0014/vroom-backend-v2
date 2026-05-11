@@ -160,11 +160,11 @@ class CarOwnerBookingController implements ICarOwnerBookingController {
 
       const total = await this._ownerBookingService.getOwnerWalletTransactionCount(userId);
       const payoutStatus = await this._ownerBookingService.getPayoutStatus(userId);
-      const walletDTO = OwnerWalletMapper.toDTO(wallet);
+      
       res.status(StatusCode.OK).json({
         success: true,
         data: {
-          wallet: walletDTO,
+          wallet,
           payoutStatus,
           total,
           page,

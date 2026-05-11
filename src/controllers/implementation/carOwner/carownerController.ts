@@ -18,12 +18,12 @@ class CarOwnerController implements ICarOwnerController {
 
   async registerBasicDetailsOwner(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const { carOwner } = await this._carOwnerService.registerBasicDetails(req.body);
+      const carOwner  = await this._carOwnerService.registerBasicDetails(req.body);
 
       res.status(StatusCode.CREATED).json({
         success: true,
         message: MESSAGES.SUCCESS.OTP_SENT,
-        data: CarOwnerMapper.toBasicRegisterDTO(carOwner),
+        data: carOwner,
       });
     } catch (error) {
       next(error);
@@ -172,8 +172,6 @@ class CarOwnerController implements ICarOwnerController {
       const result = await this._carOwnerService.changePassword(ownerId, req.body);
       if (!result.success) {
         throw new ApiError(StatusCode.BAD_REQUEST, MESSAGES.ERROR.MISSING_FIELDS);
-        res.status(StatusCode.BAD_REQUEST).json(result);
-        return;
       }
       res.status(StatusCode.OK).json(result);
     } catch (error) {
@@ -224,7 +222,7 @@ class CarOwnerController implements ICarOwnerController {
       if (!carOwner) {
         res.status(StatusCode.NOT_FOUND).json({
           success: false,
-          message: MESSAGES.ERROR.CUSTOMER_NOT_FOUND,
+          message: MESSAGES.ERROR.OWNER_NOT_FOUND,
         });
         return;
       }
@@ -246,13 +244,13 @@ class CarOwnerController implements ICarOwnerController {
       if (!ownerId) {
         throw new ApiError(StatusCode.UNAUTHORIZED, MESSAGES.ERROR.UNAUTHORIZED);
       }
-      const ownerProfile = await this._carOwnerService.getOwnerProfile(ownerId);
-      if (!ownerProfile) {
+      const carOwner = await this._carOwnerService.getOwnerProfile(ownerId);
+      if (!carOwner) {
         throw new ApiError(StatusCode.NOT_FOUND, MESSAGES.ERROR.PROFILE_NOT_FOUND);
       }
       res.status(StatusCode.OK).json({
         success: true,
-        carOwner: CarOwnerMapper.toDTOProfile(ownerProfile),
+        carOwner,
       });
     } catch (error) {
       next(error);
@@ -279,7 +277,7 @@ class CarOwnerController implements ICarOwnerController {
       res.status(StatusCode.OK).json({
         success: true,
         message: MESSAGES.SUCCESS.PROFILE_UPDATED,
-        updatedOwner: CarOwnerMapper.toDTOUpdateProfile(updatedOwner),
+        updatedOwner,
       });
     } catch (error) {
       next(error);

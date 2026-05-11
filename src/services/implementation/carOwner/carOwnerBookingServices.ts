@@ -8,6 +8,8 @@ import IWalletRepository from '@repositories/interfaces/wallet/IWalletRepository
 import IAdminRepository from '@repositories/interfaces/admin/IAdminRepository';
 import { ApiError } from '@utils/apiError';
 import { StatusCode } from '@constants/statusCode';
+import { OwnerWalletMapper } from '@mappers/ownerWallet.mapper';
+import { OwnerWalletDTO } from '@dtos/transaction/ownerWallet.dto';
 
 class CarOwnerBookingService implements ICarOwnerBookingService {
   private _ownersBookingRepository: ICarOwnerBookingRepository;
@@ -191,8 +193,9 @@ class CarOwnerBookingService implements ICarOwnerBookingService {
     };
   }
 
-  async getOwnerWallet(userId: string, page: number, limit: number) {
-    return this._ownersBookingRepository.findWalletByUserWithTransactions(userId, page, limit);
+  async getOwnerWallet(userId: string, page: number, limit: number): Promise<OwnerWalletDTO> {
+    const wallet = await this._ownersBookingRepository.findWalletByUserWithTransactions(userId, page, limit);
+    return OwnerWalletMapper.toDTO(wallet)
   }
   async getOwnerWalletTransactionCount(userId: string) {
     return this._ownersBookingRepository.getTransactionCount(userId);

@@ -10,6 +10,9 @@ import ICarOwnerRepository from '@repositories/interfaces/carOwner/ICarOwnerRepo
 import logger from '@utils/logger';
 import { ApiError } from '@utils/apiError';
 import { StatusCode } from '@constants/statusCode';
+import { CarMapper } from '@mappers/car.mapper';
+import { CarDTO } from '@dtos/car/car.dto';
+import { CarBookingDTO } from '@dtos/car/carBooking.dto';
 
 class CarOwnerCarsService implements ICarOwnerCarsService {
   private _ownersCarRepository: ICarOwnerCarsRepository;
@@ -29,7 +32,7 @@ class CarOwnerCarsService implements ICarOwnerCarsService {
     this._notificationService = notificationService;
   }
 
-  async registerNewCar(carDetails: Partial<ICar>, ownerId: string): Promise<ICar> {
+  async registerNewCar(carDetails: Partial<ICar>, ownerId: string): Promise<CarDTO> {
     logger.info('registering car for owner', ownerId);
     if (!ownerId) throw new Error('Owner ID is required');
     const owner = await this._ownerRepository.findById(ownerId);
@@ -59,11 +62,12 @@ class CarOwnerCarsService implements ICarOwnerCarsService {
       )
     );
 
-    return createdCar;
+    return  CarMapper.toCarDTO(createdCar);
   }
 
-  async getCarsByOwner(ownerId: string, page: number, limit: number): Promise<ICar[]> {
-    return await this._ownersCarRepository.getCarsByOwner(ownerId, page, limit);
+  async getCarsByOwner(ownerId: string, page: number, limit: number): Promise< CarDTO[]> {
+    const cars= await this._ownersCarRepository.getCarsByOwner(ownerId, page, limit);
+    return CarMapper.toCarDTOs(cars);
   }
 
   async getCarsCount(ownerId: string): Promise<number> {
@@ -74,7 +78,7 @@ class CarOwnerCarsService implements ICarOwnerCarsService {
     carId: string,
     ownerId: string,
     unavailableDates: string[]
-  ): Promise<ICar> {
+  ): Promise<CarDTO > {
     const car = await this._ownersCarRepository.updateAvailability(
       carId,
       ownerId,
@@ -86,22 +90,22 @@ class CarOwnerCarsService implements ICarOwnerCarsService {
         `Car with ID ${carId} not found or not owned by user`
       );
     }
-    return car;
+    return CarMapper.toCarDTO(car);
   }
 
   async getBookingsByCarId(carId: string, ownerId: string): Promise<IBooking[]> {
     return await this._ownersCarRepository.findByCarId(carId, ownerId);
   }
 
-  async deleteCar(carId: string): Promise<ICar> {
+  async deleteCar(carId: string): Promise<CarDTO> {
     const deletedCar = await this._ownersCarRepository.deleteCarById(carId);
     if (!deletedCar) {
       throw new ApiError(StatusCode.BAD_REQUEST, 'Car not found or already deleted');
     }
-    return deletedCar;
+    return CarMapper.toCarDTO(deletedCar);
   }
 
-  async updateCar(carId: string, updatedData: Partial<ICar>): Promise<ICar> {
+  async updateCar(carId: string, updatedData: Partial<ICar>): Promise<CarDTO > {
     const existingCar = await this._ownersCarRepository.findCarById(carId);
     if (!existingCar || existingCar.isDeleted) {
       throw new ApiError(StatusCode.BAD_REQUEST, 'Car not found or has been deleted.');
@@ -112,13 +116,17 @@ class CarOwnerCarsService implements ICarOwnerCarsService {
       throw new ApiError(StatusCode.BAD_REQUEST, 'Failed to update the car.');
     }
 
-    return updatedCar;
+    return CarMapper.toCarDTO(updatedCar);
   }
 
-  async getActiveBookingForCar(carId: string) {
+  async getActiveBookingForCar(carId: string): Promise< CarBookingDTO|null> {
     logger.info('booking for car with id', carId);
     const booking = await this._ownersCarRepository.findActiveBookingByCarId(carId);
-    return booking;
+    
+    if (!booking) {
+    return null;
+  }
+    return CarMapper.toCarBookingDTO(booking);
   }
 }
 export default CarOwnerCarsService;

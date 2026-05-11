@@ -82,11 +82,10 @@ class CarOwnerCarsController implements ICarOwnerCarsController {
       };
       const newCar = await this._ownerscarService.registerNewCar(carData, ownerId);
 
-      const carResponse = CarMapper.toCarDTO(newCar);
       res.status(StatusCode.CREATED).json({
         success: true,
         message: MESSAGES.SUCCESS.CAR_UPLOADED,
-        car: carResponse,
+        car: newCar,
       });
     } catch (error) {
       next(error);
@@ -110,9 +109,7 @@ class CarOwnerCarsController implements ICarOwnerCarsController {
       }
       const cars = await this._ownerscarService.getCarsByOwner(ownerId, page, limit);
       const total = await this._ownerscarService.getCarsCount(ownerId);
-      console.log(cars);
-      const carDTOs = CarMapper.toCarDTOs(cars);
-      const response: CarListResponseDTO = { cars: carDTOs, total };
+      const response: CarListResponseDTO = { cars, total };
 
       res.status(StatusCode.OK).json({ success: true, ...response });
     } catch (error) {
@@ -169,11 +166,11 @@ class CarOwnerCarsController implements ICarOwnerCarsController {
         ownerId,
         unavailableDates
       );
-      const carResponse = CarMapper.toCarDTO(car);
+      
       res.status(StatusCode.OK).json({
         success: true,
         message: MESSAGES.SUCCESS.AVAILABLE_DATES_UPDATED,
-        data: carResponse,
+        data: car,
       });
     } catch (error) {
       next(error);
@@ -187,11 +184,10 @@ class CarOwnerCarsController implements ICarOwnerCarsController {
         throw new ApiError(StatusCode.UNAUTHORIZED, MESSAGES.ERROR.UNAUTHORIZED);
       }
       const deletedCar = await this._ownerscarService.deleteCar(carId);
-      const carResponse = CarMapper.toCarDTO(deletedCar);
       res.status(StatusCode.OK).json({
         success: true,
         message: MESSAGES.SUCCESS.CAR_DELETED || 'Car deleted successfully',
-        car: carResponse,
+        car: deletedCar,
       });
     } catch (error) {
       next(error);
@@ -260,11 +256,10 @@ class CarOwnerCarsController implements ICarOwnerCarsController {
 
       const updatedCar = await this._ownerscarService.updateCar(carId, updatedCarData);
 
-      const carResponse = CarMapper.toCarDTO(updatedCar);
       res.status(StatusCode.OK).json({
         success: true,
         message: MESSAGES.SUCCESS.CAR_UPDATED,
-        car: carResponse,
+        car: updatedCar,
       });
     } catch (error) {
       next(error);
@@ -282,8 +277,8 @@ class CarOwnerCarsController implements ICarOwnerCarsController {
         });
         return;
       }
-      const bookingDTOs = CarMapper.toCarBookingDTO(booking);
-      res.status(StatusCode.OK).json({ success: true, booking: bookingDTOs });
+      // const bookingDTOs = CarMapper.toCarBookingDTO(booking);
+      res.status(StatusCode.OK).json({ success: true, booking });
     } catch (error) {
       next(error);
     }

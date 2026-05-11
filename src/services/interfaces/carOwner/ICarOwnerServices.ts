@@ -1,7 +1,9 @@
+import { OwnerProfileDTO, OwnerProfileUpdateDTO } from '@dtos/carOwner/carOwnerProfile.dto';
+import { RegisterBasicDTO } from '@dtos/common/registerBasic.dto';
 import { ICarOwner } from '@models/carowner/carOwnerModel';
 
 export interface ICarOwnerService {
-  registerBasicDetails(carOwnerDetails: Partial<ICarOwner>): Promise<{ carOwner: ICarOwner }>;
+  registerBasicDetails(carOwnerDetails: Partial<ICarOwner>): Promise<RegisterBasicDTO>;
   otpVerify(email: string, otp: string): Promise<{ carOwner: ICarOwner }>;
   resendOtp(email: string): Promise<{ message: string }>;
   loginCarOwner(
@@ -24,8 +26,8 @@ export interface ICarOwnerService {
     provider: string,
     role?: string
   ): Promise<{ accessToken: string; refreshToken: string; carOwner: ICarOwner | null }>;
-  getOwnerProfile(ownerId: string): Promise<ICarOwner>;
-  updateCarOwnerProfile(OwnerId: string, updatedData: Partial<ICarOwner>): Promise<ICarOwner>;
+  getOwnerProfile(ownerId: string): Promise<OwnerProfileDTO>;
+  updateCarOwnerProfile(OwnerId: string, updatedData: Partial<ICarOwner>): Promise<OwnerProfileUpdateDTO>;
   // updateCarOwnerProfileId(carOwnerId: string,updatedData: Partial<ICarOwner>): Promise<ICarOwner>
 
   completeRegister(ownerId: string, ownerDetails: Partial<ICarOwner>): Promise<ICarOwner>;

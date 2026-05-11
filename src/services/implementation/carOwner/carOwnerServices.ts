@@ -13,6 +13,9 @@ import logger from '@utils/logger';
 import { ApiError } from '@utils/apiError';
 import { StatusCode } from '@constants/statusCode';
 import { Otp } from '@models/otp/otpModel';
+import { CarOwnerMapper } from '@mappers/carOwner.mapper';
+import { OwnerProfileDTO, OwnerProfileUpdateDTO } from '@dtos/carOwner/carOwnerProfile.dto';
+import { RegisterBasicDTO } from '@dtos/common/registerBasic.dto';
 
 class CarOwnerService implements ICarOwnerService {
   private _carOwnerRepository: ICarOwnerRepository;
@@ -72,7 +75,7 @@ class CarOwnerService implements ICarOwnerService {
 
   async registerBasicDetails(
   carOwnerDetails: Partial<ICarOwner>
-): Promise<{ carOwner: ICarOwner }> {
+): Promise<RegisterBasicDTO > {
 
   const { fullName, email, password, phoneNumber } = carOwnerDetails;
 
@@ -116,7 +119,7 @@ class CarOwnerService implements ICarOwnerService {
     ...otpContent,
   });
 
-  return { carOwner };
+  return CarOwnerMapper.toBasicRegisterDTO(carOwner);
 }
   // async otpVerify(email: string, otp: string): Promise<{ carOwner: ICarOwner }> {
   //   logger.info(`Verifying OTP for ${email}: ${otp}`);
@@ -470,17 +473,17 @@ class CarOwnerService implements ICarOwnerService {
     return { accessToken: ownerAccessToken, refreshToken, carOwner };
   }
 
-  async getOwnerProfile(ownerId: string): Promise<ICarOwner> {
+  async getOwnerProfile(ownerId: string): Promise<OwnerProfileDTO> {
     const carOwner = await this._carOwnerRepository.findById(ownerId);
     if (!carOwner) throw new Error('Owner not found');
 
-    return carOwner;
+    return CarOwnerMapper.toDTOProfile(carOwner);
   }
 
   async updateCarOwnerProfile(
     carOwnerId: string,
     updatedData: Partial<ICarOwner>
-  ): Promise<ICarOwner> {
+  ): Promise<OwnerProfileUpdateDTO > {
     if (updatedData.phoneNumber && !/^\d{10}$/.test(updatedData.phoneNumber)) {
       throw new ApiError(StatusCode.BAD_REQUEST, 'Invalid phone number format. Must be 10 digits.');
     }
@@ -499,7 +502,7 @@ class CarOwnerService implements ICarOwnerService {
       throw new ApiError(StatusCode.BAD_REQUEST, 'Car owner not found or update failed.');
     }
 
-    return updatedOwner;
+    return CarOwnerMapper.toDTOUpdateProfile(updatedOwner);
   }
 
   async checkBlockStatus(userId: string): Promise<number> {
