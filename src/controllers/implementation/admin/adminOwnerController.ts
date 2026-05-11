@@ -123,7 +123,7 @@ class AdminOwnerController implements IAdminOwnerController {
       res.status(StatusCode.OK).json({
         success: true,
         message: MESSAGES.SUCCESS.STATUS_UPDATED || 'Owner status updated successfully',
-        data: AdminOwnerMapper.toOwnerVerifyDTO(updatedOwner),
+        data: updatedOwner,
       });
     } catch (error) {
       next(error);
@@ -142,7 +142,7 @@ class AdminOwnerController implements IAdminOwnerController {
       res.status(StatusCode.OK).json({
         success: true,
         message: MESSAGES.SUCCESS.STATUS_UPDATED || 'Owner status updated successfully',
-        user: AdminOwnerMapper.toOwnerVerifyDTO(updatedUser),
+        user: updatedUser,
       });
     } catch (error) {
       next(error);
@@ -162,7 +162,7 @@ class AdminOwnerController implements IAdminOwnerController {
       res.status(StatusCode.OK).json({
         success: true,
         message: MESSAGES.SUCCESS.STATUS_UPDATED || 'Car status updated successfully',
-        car: AdminOwnerMapper.toCarVerifyDTO(updatedCar),
+        car: updatedCar,
       });
     } catch (error) {
       next(error);
@@ -186,7 +186,7 @@ class AdminOwnerController implements IAdminOwnerController {
       res.status(StatusCode.OK).json({
         success: true,
         message: MESSAGES.SUCCESS.STATUS_UPDATED || 'Car status updated successfully',
-        car: AdminOwnerMapper.toCarVerifyDTO(updatedCar),
+        car: updatedCar,
       });
     } catch (error) {
       next(error);

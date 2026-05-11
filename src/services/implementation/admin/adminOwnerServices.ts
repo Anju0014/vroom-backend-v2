@@ -19,6 +19,9 @@ import { stripe } from '@config/stripeConfig';
 import { IWallet } from '@models/wallet/walletModel';
 import { StatusCode } from '@constants/statusCode';
 import { ApiError } from '@utils/apiError';
+import { AdminOwnerMapper } from '@mappers/adminOwner.mapper';
+import { OwnerVerifyListItemDTO } from '@dtos/adminOwner/carOwnerVerifyList.response.dto';
+import { CarVerifyListItemDTO } from '@dtos/adminOwner/carVerifyList.response.dto';
 
 class AdminOwnerService implements IAdminOwnerService {
   private _adminOwnerRepository: IAdminOwnerRepository;
@@ -82,7 +85,7 @@ class AdminOwnerService implements IAdminOwnerService {
   async updateOwnerVerifyStatus(
     ownerId: string,
     verifyDetails: Partial<ICarOwner>
-  ): Promise<ICarOwner> {
+  ): Promise< OwnerVerifyListItemDTO> {
     const { verifyStatus, rejectionReason } = verifyDetails;
     if (verifyStatus === -1 && !rejectionReason) {
       throw new ApiError(StatusCode.BAD_REQUEST, 'Reason is required when rejecting');
@@ -94,7 +97,6 @@ class AdminOwnerService implements IAdminOwnerService {
       throw new ApiError(StatusCode.BAD_REQUEST, ' User Not Found');
     }
     let updatedUser = await this._adminOwnerRepository.updateOwnerStatus(ownerId, verifyDetails);
-    logger.info('pknns', updatedUser);
     if (!updatedUser) {
       // throw new Error('Error in updating the status');
       throw new ApiError(StatusCode.BAD_REQUEST, 'Error in updating the status');
@@ -110,10 +112,10 @@ class AdminOwnerService implements IAdminOwnerService {
 
     logger.info('message');
 
-    return updatedUser;
+    return AdminOwnerMapper.toOwnerVerifyDTO(updatedUser);
   }
 
-  async updateOwnerBlockStatus(ownerId: string, newStatus: number): Promise<ICarOwner> {
+  async updateOwnerBlockStatus(ownerId: string, newStatus: number): Promise< OwnerVerifyListItemDTO > {
     logger.info('Processing status update:', ownerId, newStatus);
     const user = await this._adminOwnerRepository.findCarOwnerById(ownerId);
     if (!user) throw new Error('User not found');
@@ -124,10 +126,10 @@ class AdminOwnerService implements IAdminOwnerService {
 
     if (!updatedOwner) throw new Error('Error updating owner block status');
 
-    return updatedOwner;
+    return AdminOwnerMapper.toOwnerVerifyDTO(updatedOwner);
   }
 
-  async updateCarBlockStatus(carId: string, newStatus: number): Promise<ICar> {
+  async updateCarBlockStatus(carId: string, newStatus: number): Promise<CarVerifyListItemDTO > {
     logger.info('Processing status update:', carId, newStatus);
     const car = await this._adminOwnerRepository.findCarById(carId);
     if (!car) {
@@ -141,10 +143,10 @@ class AdminOwnerService implements IAdminOwnerService {
       throw new ApiError(StatusCode.BAD_REQUEST, 'Error updating car block status');
     }
 
-    return updatedCar;
+    return  AdminOwnerMapper.toCarVerifyDTO(updatedCar);
   }
 
-  async updateCarVerifyStatus(carId: string, verifyDetails: Partial<ICar>): Promise<ICar> {
+  async updateCarVerifyStatus(carId: string, verifyDetails: Partial<ICar>): Promise<CarVerifyListItemDTO > {
     const { verifyStatus, rejectionReason } = verifyDetails;
 
     if (verifyStatus === -1 && !rejectionReason) {
@@ -179,7 +181,7 @@ class AdminOwnerService implements IAdminOwnerService {
       await sendEmail({ to: updatedUser.email, ...emailContent });
     }
     // return AdminOwnerMapper.toCarVerifyDTO(updatedCar);
-    return updatedCar;
+    return AdminOwnerMapper.toCarVerifyDTO(updatedCar);
   }
 
   async getAdminStats(range: string): Promise<Stats> {

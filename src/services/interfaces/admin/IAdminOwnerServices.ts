@@ -4,6 +4,8 @@ import { IBooking } from '@models/booking/bookingModel';
 import { ICarPopulated } from '@models/car/carTypesModel';
 import { Stats } from '@app-types/stats';
 import { IWallet } from '@models/wallet/walletModel';
+import { OwnerVerifyListItemDTO } from '@dtos/adminOwner/carOwnerVerifyList.response.dto';
+import { CarVerifyListItemDTO } from '@dtos/adminOwner/carVerifyList.response.dto';
 
 export interface IAdminOwnerService {
   listAllOwnerforVerify(
@@ -27,10 +29,10 @@ export interface IAdminOwnerService {
     search: string
   ): Promise<{ bookings: IBooking[]; total: number }>;
 
-  updateOwnerVerifyStatus(ownerId: string, verifyDetails: Partial<ICarOwner>): Promise<ICarOwner>;
-  updateOwnerBlockStatus(ownerId: string, newStatus: number): Promise<ICarOwner>;
-  updateCarBlockStatus(carId: string, newStatus: number): Promise<ICar>;
-  updateCarVerifyStatus(carId: string, verifyDetails: Partial<ICar>): Promise<ICar>;
+  updateOwnerVerifyStatus(ownerId: string, verifyDetails: Partial<ICarOwner>): Promise< OwnerVerifyListItemDTO>;
+  updateOwnerBlockStatus(ownerId: string, newStatus: number): Promise< OwnerVerifyListItemDTO >;
+  updateCarBlockStatus(carId: string, newStatus: number): Promise<CarVerifyListItemDTO >;
+  updateCarVerifyStatus(carId: string, verifyDetails: Partial<ICar>):  Promise<CarVerifyListItemDTO >;
   getAdminStats(range: string): Promise<Stats>;
   getOwnerWallets(): Promise<IWallet[] | null>;
   payoutOwner(ownerId: string, amount: number): Promise<{ wallet: IWallet; transferId: string }>;

@@ -8,6 +8,8 @@ import { IAdmin } from '@models/admin/adminModel';
 import { ICarOwner } from '@models/carowner/carOwnerModel';
 import { ApiError } from '@utils/apiError';
 import { StatusCode } from '@constants/statusCode';
+import { CustomerMapper } from '@mappers/customer.mapper';
+import { CustomerDTO } from '@dtos/customer/customer.dto';
 
 class AdminService implements IAdminService {
   private _adminRepository: IAdminRepository;
@@ -125,7 +127,7 @@ class AdminService implements IAdminService {
   async updateCustomerBlockStatus(
     customerId: string,
     newStatus: number
-  ): Promise<ICustomer | null> {
+  ): Promise<CustomerDTO | null> {
     {
       logger.info('Processing status update:', customerId, newStatus);
       const customer = await this._adminRepository.findCustomerById(customerId);
@@ -144,7 +146,7 @@ class AdminService implements IAdminService {
         throw new ApiError(StatusCode.BAD_REQUEST, 'Failed to update status');
       }
 
-      return updatedCustomer;
+      return CustomerMapper.toDTO(updatedCustomer);
     }
   }
 }

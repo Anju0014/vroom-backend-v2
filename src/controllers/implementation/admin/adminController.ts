@@ -150,7 +150,7 @@ class AdminController implements IAdminController {
       res.status(StatusCode.OK).json({
         success: true,
         message: MESSAGES.SUCCESS.STATUS_UPDATED || 'Customer status updated successfully',
-        user: CustomerMapper.toDTO(updatedCustomer),
+        user: updatedCustomer,
       });
     } catch (error) {
       next(error);

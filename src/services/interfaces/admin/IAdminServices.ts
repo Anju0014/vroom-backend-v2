@@ -1,6 +1,7 @@
 import { IAdmin } from '@models/admin/adminModel';
 import { ICustomer } from '@models/customer/customerModel';
 import { ICarOwner } from '@models/carowner/carOwnerModel';
+import { CustomerDTO } from '@dtos/customer/customer.dto';
 export interface IAdminService {
   loginAdmin(
     email: string,
@@ -18,5 +19,5 @@ export interface IAdminService {
     limit: number,
     search: string
   ): Promise<{ carOwners: ICarOwner[]; total: number }>;
-  updateCustomerBlockStatus(customerId: string, newStatus: number): Promise<ICustomer | null>;
+  updateCustomerBlockStatus(customerId: string, newStatus: number): Promise<CustomerDTO | null>;
 }
