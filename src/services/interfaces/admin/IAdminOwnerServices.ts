@@ -29,10 +29,13 @@ export interface IAdminOwnerService {
     search: string
   ): Promise<{ bookings: IBooking[]; total: number }>;
 
-  updateOwnerVerifyStatus(ownerId: string, verifyDetails: Partial<ICarOwner>): Promise< OwnerVerifyListItemDTO>;
-  updateOwnerBlockStatus(ownerId: string, newStatus: number): Promise< OwnerVerifyListItemDTO >;
-  updateCarBlockStatus(carId: string, newStatus: number): Promise<CarVerifyListItemDTO >;
-  updateCarVerifyStatus(carId: string, verifyDetails: Partial<ICar>):  Promise<CarVerifyListItemDTO >;
+  updateOwnerVerifyStatus(
+    ownerId: string,
+    verifyDetails: Partial<ICarOwner>
+  ): Promise<OwnerVerifyListItemDTO>;
+  updateOwnerBlockStatus(ownerId: string, newStatus: number): Promise<OwnerVerifyListItemDTO>;
+  updateCarBlockStatus(carId: string, newStatus: number): Promise<CarVerifyListItemDTO>;
+  updateCarVerifyStatus(carId: string, verifyDetails: Partial<ICar>): Promise<CarVerifyListItemDTO>;
   getAdminStats(range: string): Promise<Stats>;
   getOwnerWallets(): Promise<IWallet[] | null>;
   payoutOwner(ownerId: string, amount: number): Promise<{ wallet: IWallet; transferId: string }>;

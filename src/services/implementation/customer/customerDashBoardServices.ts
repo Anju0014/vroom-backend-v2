@@ -28,9 +28,13 @@ class CustomerDashBoardService implements ICustomerDashBoardService {
     this._adminRepository = adminRepository;
   }
 
-  async getCustomerBookings(userId: string, page: number, limit: number): Promise<CustomerBookingDTO[]> {
-    const bookings= await this._customerDashRepository.findBookingsByUserId(userId, page, limit);
-    return CustomerBookingMapper.toDTOList(bookings)
+  async getCustomerBookings(
+    userId: string,
+    page: number,
+    limit: number
+  ): Promise<CustomerBookingDTO[]> {
+    const bookings = await this._customerDashRepository.findBookingsByUserId(userId, page, limit);
+    return CustomerBookingMapper.toDTOList(bookings);
   }
 
   async getCustomerBookingCount(userId: string): Promise<number> {
@@ -38,8 +42,12 @@ class CustomerDashBoardService implements ICustomerDashBoardService {
   }
 
   async getCustomerWallet(userId: string, page: number, limit: number): Promise<CustomerWalletDTO> {
-      const wallet= await this._customerDashRepository.findWalletByUserWithTransactions(userId, page, limit);
-       return CustomerWalletMapper.toDTO(wallet)
+    const wallet = await this._customerDashRepository.findWalletByUserWithTransactions(
+      userId,
+      page,
+      limit
+    );
+    return CustomerWalletMapper.toDTO(wallet);
   }
 
   async getCustomerWalletTransactionCount(userId: string) {

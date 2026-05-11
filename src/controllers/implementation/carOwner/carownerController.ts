@@ -18,7 +18,7 @@ class CarOwnerController implements ICarOwnerController {
 
   async registerBasicDetailsOwner(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const carOwner  = await this._carOwnerService.registerBasicDetails(req.body);
+      const carOwner = await this._carOwnerService.registerBasicDetails(req.body);
 
       res.status(StatusCode.CREATED).json({
         success: true,

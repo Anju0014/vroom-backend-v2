@@ -31,7 +31,6 @@
 
 // export const PickupOtp = model<IPickupOtp>('PickupOtp', pickupOtpSchema);
 
-
 import { Schema, model, Document, Types } from 'mongoose';
 
 export interface IOtp extends Document {

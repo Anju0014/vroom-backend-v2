@@ -194,8 +194,12 @@ class CarOwnerBookingService implements ICarOwnerBookingService {
   }
 
   async getOwnerWallet(userId: string, page: number, limit: number): Promise<OwnerWalletDTO> {
-    const wallet = await this._ownersBookingRepository.findWalletByUserWithTransactions(userId, page, limit);
-    return OwnerWalletMapper.toDTO(wallet)
+    const wallet = await this._ownersBookingRepository.findWalletByUserWithTransactions(
+      userId,
+      page,
+      limit
+    );
+    return OwnerWalletMapper.toDTO(wallet);
   }
   async getOwnerWalletTransactionCount(userId: string) {
     return this._ownersBookingRepository.getTransactionCount(userId);

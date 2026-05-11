@@ -27,7 +27,10 @@ export interface ICarOwnerService {
     role?: string
   ): Promise<{ accessToken: string; refreshToken: string; carOwner: ICarOwner | null }>;
   getOwnerProfile(ownerId: string): Promise<OwnerProfileDTO>;
-  updateCarOwnerProfile(OwnerId: string, updatedData: Partial<ICarOwner>): Promise<OwnerProfileUpdateDTO>;
+  updateCarOwnerProfile(
+    OwnerId: string,
+    updatedData: Partial<ICarOwner>
+  ): Promise<OwnerProfileUpdateDTO>;
   // updateCarOwnerProfileId(carOwnerId: string,updatedData: Partial<ICarOwner>): Promise<ICarOwner>
 
   completeRegister(ownerId: string, ownerDetails: Partial<ICarOwner>): Promise<ICarOwner>;

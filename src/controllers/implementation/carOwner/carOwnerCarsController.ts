@@ -6,7 +6,6 @@ import { StatusCode } from 'constants/statusCode';
 
 import ICarOwnerCarsController from '@controllers/interfaces/carowner/ICarOwnerCarsController';
 import { ICarOwnerCarsService } from '@services/interfaces/carOwner/ICarOwnerCarsServices';
-import { CarMapper } from '@mappers/car.mapper';
 import { CarListResponseDTO } from '@dtos/car/carList.response.dto';
 import logger from '@utils/logger';
 import { ApiError } from '@utils/apiError';
@@ -166,7 +165,7 @@ class CarOwnerCarsController implements ICarOwnerCarsController {
         ownerId,
         unavailableDates
       );
-      
+
       res.status(StatusCode.OK).json({
         success: true,
         message: MESSAGES.SUCCESS.AVAILABLE_DATES_UPDATED,

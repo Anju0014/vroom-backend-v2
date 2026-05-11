@@ -9,7 +9,6 @@ import { generateViewRecieptPresignedUrl } from '@services/s3Service';
 import { OwnerBookingListResponseDTO } from '@dtos/booking/carOwnerBookingList.response.dto';
 import { toBookingDTOs } from '@mappers/ownerBooking.mapper';
 import logger from '@utils/logger';
-import { OwnerWalletMapper } from '@mappers/ownerWallet.mapper';
 import { CarOwner } from '@models/carowner/carOwnerModel';
 import { stripe } from '@config/stripeConfig';
 import { ApiError } from '@utils/apiError';
@@ -160,7 +159,7 @@ class CarOwnerBookingController implements ICarOwnerBookingController {
 
       const total = await this._ownerBookingService.getOwnerWalletTransactionCount(userId);
       const payoutStatus = await this._ownerBookingService.getPayoutStatus(userId);
-      
+
       res.status(StatusCode.OK).json({
         success: true,
         data: {

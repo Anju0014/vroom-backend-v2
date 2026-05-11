@@ -85,7 +85,7 @@ class AdminOwnerService implements IAdminOwnerService {
   async updateOwnerVerifyStatus(
     ownerId: string,
     verifyDetails: Partial<ICarOwner>
-  ): Promise< OwnerVerifyListItemDTO> {
+  ): Promise<OwnerVerifyListItemDTO> {
     const { verifyStatus, rejectionReason } = verifyDetails;
     if (verifyStatus === -1 && !rejectionReason) {
       throw new ApiError(StatusCode.BAD_REQUEST, 'Reason is required when rejecting');
@@ -115,7 +115,10 @@ class AdminOwnerService implements IAdminOwnerService {
     return AdminOwnerMapper.toOwnerVerifyDTO(updatedUser);
   }
 
-  async updateOwnerBlockStatus(ownerId: string, newStatus: number): Promise< OwnerVerifyListItemDTO > {
+  async updateOwnerBlockStatus(
+    ownerId: string,
+    newStatus: number
+  ): Promise<OwnerVerifyListItemDTO> {
     logger.info('Processing status update:', ownerId, newStatus);
     const user = await this._adminOwnerRepository.findCarOwnerById(ownerId);
     if (!user) throw new Error('User not found');
@@ -129,7 +132,7 @@ class AdminOwnerService implements IAdminOwnerService {
     return AdminOwnerMapper.toOwnerVerifyDTO(updatedOwner);
   }
 
-  async updateCarBlockStatus(carId: string, newStatus: number): Promise<CarVerifyListItemDTO > {
+  async updateCarBlockStatus(carId: string, newStatus: number): Promise<CarVerifyListItemDTO> {
     logger.info('Processing status update:', carId, newStatus);
     const car = await this._adminOwnerRepository.findCarById(carId);
     if (!car) {
@@ -143,10 +146,13 @@ class AdminOwnerService implements IAdminOwnerService {
       throw new ApiError(StatusCode.BAD_REQUEST, 'Error updating car block status');
     }
 
-    return  AdminOwnerMapper.toCarVerifyDTO(updatedCar);
+    return AdminOwnerMapper.toCarVerifyDTO(updatedCar);
   }
 
-  async updateCarVerifyStatus(carId: string, verifyDetails: Partial<ICar>): Promise<CarVerifyListItemDTO > {
+  async updateCarVerifyStatus(
+    carId: string,
+    verifyDetails: Partial<ICar>
+  ): Promise<CarVerifyListItemDTO> {
     const { verifyStatus, rejectionReason } = verifyDetails;
 
     if (verifyStatus === -1 && !rejectionReason) {

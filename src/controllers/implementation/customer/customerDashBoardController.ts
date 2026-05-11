@@ -6,9 +6,7 @@ import { StatusCode } from '@constants/statusCode';
 import ICustomerDashBoardController from '@controllers/interfaces/customer/ICustomerDashBoardController';
 import { ICustomerDashBoardService } from '@services/interfaces/customer/ICustomerDashBoardServices';
 import { generateAndUploadReceipt } from '@services/receiptService';
-import { CustomerBookingMapper } from '@mappers/customerBooking.mapper';
 import logger from '@utils/logger';
-import { CustomerWalletMapper } from '@mappers/customerWallet.mapper';
 import { ApiError } from '@utils/apiError';
 
 class CustomerDashBoardController implements ICustomerDashBoardController {

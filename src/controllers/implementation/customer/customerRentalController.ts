@@ -7,16 +7,14 @@ import ICustomerRentalController from '@controllers/interfaces/customer/ICustome
 import { ICustomerRentalService } from '@services/interfaces/customer/ICustomerRentalServices';
 import { generateAndUploadReceipt } from '@services/receiptService';
 import { Booking } from '@models/booking/bookingModel';
-import { CustomerCarMapper } from '@mappers/customerCar.mapper';
 import logger from '@utils/logger';
 import { Wallet } from '@models/wallet/walletModel';
 import crypto from 'crypto';
 import ICustomerRentalRepository from '@repositories/interfaces/customer/ICustomerRentalRepository';
 import { sendEmail } from '@utils/emailconfirm';
 import { otpTemplate } from '@templates/emailTemplates';
-import { Otp} from '@models/otp/otpModel';
+import { Otp } from '@models/otp/otpModel';
 import { ApiError } from '@utils/apiError';
-import CarOwnerService from '@services/implementation/carOwner/carOwnerServices';
 
 class CustomerRentalController implements ICustomerRentalController {
   private _customerRentalService: ICustomerRentalService;
@@ -107,7 +105,7 @@ class CustomerRentalController implements ICustomerRentalController {
       });
       logger.info('Cars:', cars, 'Total:', total);
 
-      res.status(StatusCode.OK).json({ data:cars, total });
+      res.status(StatusCode.OK).json({ data: cars, total });
     } catch (error) {
       next(error);
     }
@@ -359,7 +357,7 @@ class CustomerRentalController implements ICustomerRentalController {
 
     const hashedOtp = crypto.createHash('sha256').update(otp).digest('hex');
 
-    await Otp.deleteMany({ bookingId: booking._id,purpose: 'PICKUP', });
+    await Otp.deleteMany({ bookingId: booking._id, purpose: 'PICKUP' });
 
     await Otp.create({
       bookingId: booking._id,
@@ -406,7 +404,7 @@ class CustomerRentalController implements ICustomerRentalController {
     booking.pickupVerified = true;
     await booking.save();
 
-    await Otp.deleteMany({ bookingId: booking._id , purpose: 'PICKUP',});
+    await Otp.deleteMany({ bookingId: booking._id, purpose: 'PICKUP' });
 
     res.json({ message: 'Pickup verified successfully' });
   }

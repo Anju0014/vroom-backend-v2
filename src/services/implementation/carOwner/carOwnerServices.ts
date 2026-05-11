@@ -73,54 +73,51 @@ class CarOwnerService implements ICarOwnerService {
   //   return { carOwner };
   // }
 
-  async registerBasicDetails(
-  carOwnerDetails: Partial<ICarOwner>
-): Promise<RegisterBasicDTO > {
+  async registerBasicDetails(carOwnerDetails: Partial<ICarOwner>): Promise<RegisterBasicDTO> {
+    const { fullName, email, password, phoneNumber } = carOwnerDetails;
 
-  const { fullName, email, password, phoneNumber } = carOwnerDetails;
+    if (!fullName || !email || !password) {
+      throw new ApiError(StatusCode.BAD_REQUEST, 'All fields are required');
+    }
 
-  if (!fullName || !email || !password) {
-    throw new ApiError(StatusCode.BAD_REQUEST, 'All fields are required');
+    const existingUser = await this._carOwnerRepository.findUserByEmail(email);
+
+    if (existingUser) {
+      throw new ApiError(StatusCode.BAD_REQUEST, 'Email already exists');
+    }
+
+    const hashedPassword = await PasswordUtils.hashPassword(password);
+
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+    await Otp.deleteMany({
+      email,
+      purpose: 'SIGNUP',
+    });
+
+    await Otp.create({
+      email,
+      otp,
+      purpose: 'SIGNUP',
+    });
+
+    const carOwner = await this._carOwnerRepository.create({
+      fullName,
+      email,
+      password: hashedPassword,
+      phoneNumber,
+      processStatus: 0,
+    });
+
+    const otpContent = otpTemplate(otp);
+
+    await sendEmail({
+      to: email,
+      ...otpContent,
+    });
+
+    return CarOwnerMapper.toBasicRegisterDTO(carOwner);
   }
-
-  const existingUser = await this._carOwnerRepository.findUserByEmail(email);
-
-  if (existingUser) {
-    throw new ApiError(StatusCode.BAD_REQUEST, 'Email already exists');
-  }
-
-  const hashedPassword = await PasswordUtils.hashPassword(password);
-
-  const otp = Math.floor(100000 + Math.random() * 900000).toString();
-
-  await Otp.deleteMany({
-    email,
-    purpose: 'SIGNUP',
-  });
-
-  await Otp.create({
-    email,
-    otp,
-    purpose: 'SIGNUP',
-  });
-
-  const carOwner = await this._carOwnerRepository.create({
-    fullName,
-    email,
-    password: hashedPassword,
-    phoneNumber,
-    processStatus: 0,
-  });
-
-  const otpContent = otpTemplate(otp);
-
-  await sendEmail({
-    to: email,
-    ...otpContent,
-  });
-
-  return CarOwnerMapper.toBasicRegisterDTO(carOwner);
-}
   // async otpVerify(email: string, otp: string): Promise<{ carOwner: ICarOwner }> {
   //   logger.info(`Verifying OTP for ${email}: ${otp}`);
 
@@ -153,51 +150,36 @@ class CarOwnerService implements ICarOwnerService {
   //   return { carOwner };
   // }
 
-  async otpVerify(
-  email: string,
-  otp: string
-): Promise<{ carOwner: ICarOwner }> {
+  async otpVerify(email: string, otp: string): Promise<{ carOwner: ICarOwner }> {
+    const carOwner = await this._carOwnerRepository.findUserByEmail(email);
 
-  const carOwner = await this._carOwnerRepository.findUserByEmail(email);
+    if (!carOwner) {
+      throw new ApiError(StatusCode.BAD_REQUEST, 'User not found');
+    }
 
-  if (!carOwner) {
-    throw new ApiError(StatusCode.BAD_REQUEST, 'User not found');
+    const existingOtp = await Otp.findOne({
+      email,
+      purpose: 'SIGNUP',
+    });
+
+    if (!existingOtp) {
+      throw new ApiError(StatusCode.BAD_REQUEST, 'OTP expired or not found');
+    }
+
+    if (existingOtp.otp !== otp) {
+      throw new ApiError(StatusCode.BAD_REQUEST, 'Invalid OTP');
+    }
+
+    carOwner.processStatus = 1;
+
+    await this._carOwnerRepository.updateCarOwner(carOwner._id.toString(), carOwner);
+
+    await Otp.deleteOne({
+      _id: existingOtp._id,
+    });
+
+    return { carOwner };
   }
-
-  const existingOtp = await Otp.findOne({
-    email,
-    purpose: 'SIGNUP',
-  });
-
-
-  if (!existingOtp) {
-    throw new ApiError(
-      StatusCode.BAD_REQUEST,
-      'OTP expired or not found'
-    );
-  }
-
-
-  if (existingOtp.otp !== otp) {
-    throw new ApiError(
-      StatusCode.BAD_REQUEST,
-      'Invalid OTP'
-    );
-  }
-
-  carOwner.processStatus = 1;
-
-  await this._carOwnerRepository.updateCarOwner(
-    carOwner._id.toString(),
-    carOwner
-  );
-
-  await Otp.deleteOne({
-    _id: existingOtp._id,
-  });
-
-  return { carOwner };
-}
 
   // async resendOtp(email: string): Promise<{ message: string }> {
   //   logger.info(`Resending OTP for email: ${email}`);
@@ -222,40 +204,36 @@ class CarOwnerService implements ICarOwnerService {
   // }
 
   async resendOtp(email: string): Promise<{ message: string }> {
+    const carOwner = await this._carOwnerRepository.findUserByEmail(email);
 
-  const carOwner = await this._carOwnerRepository.findUserByEmail(email);
+    if (!carOwner) {
+      throw new ApiError(StatusCode.BAD_REQUEST, 'User not found');
+    }
 
-  if (!carOwner) {
-    throw new ApiError(StatusCode.BAD_REQUEST, 'User not found');
+    const newOtp = Math.floor(100000 + Math.random() * 900000).toString();
+
+    await Otp.deleteMany({
+      email,
+      purpose: 'SIGNUP',
+    });
+
+    await Otp.create({
+      email,
+      otp: newOtp,
+      purpose: 'SIGNUP',
+    });
+
+    const otpContent = otpTemplate(newOtp);
+
+    await sendEmail({
+      to: carOwner.email,
+      ...otpContent,
+    });
+
+    return {
+      message: 'OTP resent successfully',
+    };
   }
-
-  const newOtp = Math.floor(
-    100000 + Math.random() * 900000
-  ).toString();
-
-  await Otp.deleteMany({
-    email,
-    purpose: 'SIGNUP',
-  });
-
-  await Otp.create({
-    email,
-    otp: newOtp,
-    purpose: 'SIGNUP',
-  });
-
-  const otpContent = otpTemplate(newOtp);
-
-  await sendEmail({
-    to: carOwner.email,
-    ...otpContent,
-  });
-
-  return {
-    message: 'OTP resent successfully',
-  };
-}
-
 
   async loginCarOwner(
     email: string,
@@ -483,7 +461,7 @@ class CarOwnerService implements ICarOwnerService {
   async updateCarOwnerProfile(
     carOwnerId: string,
     updatedData: Partial<ICarOwner>
-  ): Promise<OwnerProfileUpdateDTO > {
+  ): Promise<OwnerProfileUpdateDTO> {
     if (updatedData.phoneNumber && !/^\d{10}$/.test(updatedData.phoneNumber)) {
       throw new ApiError(StatusCode.BAD_REQUEST, 'Invalid phone number format. Must be 10 digits.');
     }

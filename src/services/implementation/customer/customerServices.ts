@@ -20,9 +20,7 @@ class CustomerService implements ICustomerService {
     this._customerRepository = customerRepository;
   }
 
-  async registerBasicDetails(
-    customerDetails: Partial<ICustomer>
-  ): Promise<RegisterBasicDTO> {
+  async registerBasicDetails(customerDetails: Partial<ICustomer>): Promise<RegisterBasicDTO> {
     const { fullName, email, password, phoneNumber } = customerDetails;
 
     if (!fullName || !email || !password) {
@@ -42,15 +40,15 @@ class CustomerService implements ICustomerService {
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
     await Otp.deleteMany({
-    email,
-    purpose: 'SIGNUP',
-  });
+      email,
+      purpose: 'SIGNUP',
+    });
 
-  await Otp.create({
-    email,
-    otp,
-    purpose: 'SIGNUP',
-  });
+    await Otp.create({
+      email,
+      otp,
+      purpose: 'SIGNUP',
+    });
 
     const customer = await this._customerRepository.create({
       fullName,
@@ -65,7 +63,7 @@ class CustomerService implements ICustomerService {
 
     logger.info('create new customer: ', customer);
 
-    return  CustomerMapper.toBasicRegisterDTO(customer) ;
+    return CustomerMapper.toBasicRegisterDTO(customer);
   }
 
   async otpVerify(email: string, otp: string): Promise<{ customer: ICustomer }> {
@@ -84,25 +82,17 @@ class CustomerService implements ICustomerService {
     }
 
     const existingOtp = await Otp.findOne({
-    email,
-    purpose: 'SIGNUP',
-  });
+      email,
+      purpose: 'SIGNUP',
+    });
 
-  
-  if (!existingOtp) {
-    throw new ApiError(
-      StatusCode.BAD_REQUEST,
-      'OTP expired or not found'
-    );
-  }
+    if (!existingOtp) {
+      throw new ApiError(StatusCode.BAD_REQUEST, 'OTP expired or not found');
+    }
 
-  
-  if (existingOtp.otp !== otp) {
-    throw new ApiError(
-      StatusCode.BAD_REQUEST,
-      'Invalid OTP'
-    );
-  }
+    if (existingOtp.otp !== otp) {
+      throw new ApiError(StatusCode.BAD_REQUEST, 'Invalid OTP');
+    }
     // if (!customer.otp || customer.otp !== otp) {
     //   throw new ApiError(StatusCode.BAD_REQUEST, 'Invalid OTP');
     // }
@@ -116,12 +106,11 @@ class CustomerService implements ICustomerService {
     // customer.otp = null;
     // customer.otpExpires = null;
 
-    
     await this._customerRepository.updateCustomer(customer._id.toString(), customer);
 
     await Otp.deleteOne({
-    _id: existingOtp._id,
-  });
+      _id: existingOtp._id,
+    });
 
     logger.info('User OTP verified successfully!');
 
@@ -135,17 +124,17 @@ class CustomerService implements ICustomerService {
       throw new ApiError(StatusCode.BAD_REQUEST, 'User not found');
     }
     const newOtp = Math.floor(100000 + Math.random() * 90000).toString();
-   
-     await Otp.deleteMany({
-    email,
-    purpose: 'SIGNUP',
-  });
 
-  await Otp.create({
-    email,
-    otp: newOtp,
-    purpose: 'SIGNUP',
-  });
+    await Otp.deleteMany({
+      email,
+      purpose: 'SIGNUP',
+    });
+
+    await Otp.create({
+      email,
+      otp: newOtp,
+      purpose: 'SIGNUP',
+    });
 
     await this._customerRepository.updateCustomer(customer._id.toString(), customer);
 
@@ -325,7 +314,7 @@ class CustomerService implements ICustomerService {
     return { accessToken: customerAccessToken, refreshToken, customer };
   }
 
-  async getCustomerProfile(customerId: string): Promise< CustomerDTO> {
+  async getCustomerProfile(customerId: string): Promise<CustomerDTO> {
     const customer = await this._customerRepository.findById(customerId);
     if (!customer) throw new ApiError(StatusCode.BAD_REQUEST, 'customer not found');
     return CustomerMapper.toDTO(customer);

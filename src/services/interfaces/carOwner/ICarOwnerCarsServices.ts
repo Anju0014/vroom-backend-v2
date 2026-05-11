@@ -10,7 +10,11 @@ export interface ICarOwnerCarsService {
   deleteCar(carId: string): Promise<CarDTO>;
   updateCar(carId: string, updatedData: Partial<ICar>): Promise<CarDTO>;
 
-  updateCarAvailability(carId: string, ownerId: string, unavailableDates: string[]): Promise<CarDTO>;
+  updateCarAvailability(
+    carId: string,
+    ownerId: string,
+    unavailableDates: string[]
+  ): Promise<CarDTO>;
   getBookingsByCarId(carId: string, ownerId: string): Promise<IBooking[]>;
-  getActiveBookingForCar(carId: string): Promise<CarBookingDTO|null>;
+  getActiveBookingForCar(carId: string): Promise<CarBookingDTO | null>;
 }

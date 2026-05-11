@@ -28,16 +28,12 @@ class CustomerRentalService implements ICustomerRentalService {
   }
 
   async getNearbyCars(lat: number, lng: number, maxDistance: number): Promise<CustomerCarDTO[]> {
-   const cars = await this._customerRentalRepository.findNearbyCars(
-    lat,
-    lng,
-    maxDistance
-  );
+    const cars = await this._customerRentalRepository.findNearbyCars(lat, lng, maxDistance);
 
-  return CustomerCarMapper.toCarDTOs(cars);
+    return CustomerCarMapper.toCarDTOs(cars);
   }
 
-  async getFeaturedCars(): Promise<CustomerCarDTO[] > {
+  async getFeaturedCars(): Promise<CustomerCarDTO[]> {
     const cars = await this._customerRentalRepository.findFeaturedCars();
     return CustomerCarMapper.toCarDTOs(cars);
   }
@@ -62,7 +58,7 @@ class CustomerRentalService implements ICustomerRentalService {
       startDate: string;
       endDate: string;
     }
-  ): Promise<CustomerCarDTO[] > {
+  ): Promise<CustomerCarDTO[]> {
     const cars = await this._customerRentalRepository.getAllCars(page, limit, filters);
     return CustomerCarMapper.toCarDTOs(cars);
   }

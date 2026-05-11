@@ -62,11 +62,11 @@ class CarOwnerCarsService implements ICarOwnerCarsService {
       )
     );
 
-    return  CarMapper.toCarDTO(createdCar);
+    return CarMapper.toCarDTO(createdCar);
   }
 
-  async getCarsByOwner(ownerId: string, page: number, limit: number): Promise< CarDTO[]> {
-    const cars= await this._ownersCarRepository.getCarsByOwner(ownerId, page, limit);
+  async getCarsByOwner(ownerId: string, page: number, limit: number): Promise<CarDTO[]> {
+    const cars = await this._ownersCarRepository.getCarsByOwner(ownerId, page, limit);
     return CarMapper.toCarDTOs(cars);
   }
 
@@ -78,7 +78,7 @@ class CarOwnerCarsService implements ICarOwnerCarsService {
     carId: string,
     ownerId: string,
     unavailableDates: string[]
-  ): Promise<CarDTO > {
+  ): Promise<CarDTO> {
     const car = await this._ownersCarRepository.updateAvailability(
       carId,
       ownerId,
@@ -105,7 +105,7 @@ class CarOwnerCarsService implements ICarOwnerCarsService {
     return CarMapper.toCarDTO(deletedCar);
   }
 
-  async updateCar(carId: string, updatedData: Partial<ICar>): Promise<CarDTO > {
+  async updateCar(carId: string, updatedData: Partial<ICar>): Promise<CarDTO> {
     const existingCar = await this._ownersCarRepository.findCarById(carId);
     if (!existingCar || existingCar.isDeleted) {
       throw new ApiError(StatusCode.BAD_REQUEST, 'Car not found or has been deleted.');
@@ -119,13 +119,13 @@ class CarOwnerCarsService implements ICarOwnerCarsService {
     return CarMapper.toCarDTO(updatedCar);
   }
 
-  async getActiveBookingForCar(carId: string): Promise< CarBookingDTO|null> {
+  async getActiveBookingForCar(carId: string): Promise<CarBookingDTO | null> {
     logger.info('booking for car with id', carId);
     const booking = await this._ownersCarRepository.findActiveBookingByCarId(carId);
-    
+
     if (!booking) {
-    return null;
-  }
+      return null;
+    }
     return CarMapper.toCarBookingDTO(booking);
   }
 }

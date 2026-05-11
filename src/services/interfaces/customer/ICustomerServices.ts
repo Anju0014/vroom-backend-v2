@@ -26,8 +26,11 @@ export interface ICustomerService {
     provider: string,
     role?: string
   ): Promise<{ accessToken: string; refreshToken: string; customer: ICustomer | null }>;
-  getCustomerProfile(customerId: string): Promise<CustomerDTO >;
-  updateCustomerProfile(customerId: string, updatedData: Partial<ICustomer>): Promise<CustomerProfileUpdateDTO>;
+  getCustomerProfile(customerId: string): Promise<CustomerDTO>;
+  updateCustomerProfile(
+    customerId: string,
+    updatedData: Partial<ICustomer>
+  ): Promise<CustomerProfileUpdateDTO>;
   updateCustomerProfileId(customerId: string, updatedData: Partial<ICustomer>): Promise<ICustomer>;
   checkBlockStatus(userId: string): Promise<number>;
 }
