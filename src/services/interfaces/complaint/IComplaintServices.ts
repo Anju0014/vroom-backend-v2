@@ -17,6 +17,8 @@ interface IComplaintService {
     limit: number
   ): Promise<{ complaints: IComplaint[] | null; total: number }>;
 
+  getMyBookingsId(userId: string, role: 'customer' | 'carOwner'): Promise<{ bookingIds: string[] }>;
+
   getAllComplaints(
     page: number,
     limit: number,

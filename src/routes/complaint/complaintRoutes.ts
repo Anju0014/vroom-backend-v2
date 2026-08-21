@@ -18,6 +18,9 @@ complaintRouter.post('/', authMiddleware, (req, res, next) =>
 complaintRouter.get('/', authMiddleware, (req, res, next) =>
   complaintController.getMyComplaints(req, res, next)
 );
+complaintRouter.get('/bookings', authMiddleware, (req, res, next) =>
+  complaintController.getMyBookingsId(req, res, next)
+);
 
 complaintRouter.get('/admin', authMiddleware, (req, res, next) =>
   complaintController.getAllComplaints(req, res, next)

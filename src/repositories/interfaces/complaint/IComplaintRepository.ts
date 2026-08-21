@@ -9,6 +9,8 @@ interface IComplaintRepository {
     limit: number
   ): Promise<{ complaints: IComplaint[]; total: number }>;
 
+  findBookingsByUser(userId: string): Promise<{ bookingIds: string[] }>;
+
   findAll(
     page: number,
     limit: number,

@@ -57,6 +57,17 @@ class ComplaintController implements IComplaintController {
     return;
   }
 
+  async getMyBookingsId(req: CustomRequest, res: Response, next: NextFunction) {
+    const { userId, role } = req;
+    if (!userId || !role) {
+      throw new ApiError(StatusCode.UNAUTHORIZED, MESSAGES.ERROR.UNAUTHORIZED);
+    }
+    if (role === 'admin') {
+      return;
+    }
+    const bookingIds = await this._complaintService.getMyBookingsId(userId, role);
+    res.status(StatusCode.OK).json({ bookingIds });
+  }
   async getAllComplaints(req: Request, res: Response, next: NextFunction) {
     const page = Number(req.query.page) || 1;
     const limit = Number(req.query.limit) || 10;

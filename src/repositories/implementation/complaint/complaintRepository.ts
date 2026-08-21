@@ -1,3 +1,4 @@
+import { Booking } from '@models/booking/bookingModel';
 import { Complaint, IComplaint } from '@models/complaint/complaintModel';
 import IComplaintRepository from '@repositories/interfaces/complaint/IComplaintRepository';
 import { FilterQuery } from 'mongoose';
@@ -19,6 +20,19 @@ class ComplaintRepository implements IComplaintRepository {
 
     const total = await Complaint.countDocuments({ raisedBy: userId });
     return { complaints, total };
+  }
+
+  async findBookingsByUser(userId: string): Promise<{ bookingIds: string[] }> {
+    const bookings = await Booking.find({ userId,
+        status: { $nin: ['pending', 'failed', 'agreementAccepted'] },
+       },
+        { _id: 0, bookingId: 1 })
+          .sort({ createdAt: -1 })
+        .lean();
+
+    const bookingIds = bookings.map((booking) => booking.bookingId);
+
+    return { bookingIds };
   }
 
   async findAll(

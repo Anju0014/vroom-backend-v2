@@ -46,6 +46,13 @@ class ComplaintService implements IComplaintService {
     const { complaints, total } = await this._complaintRepository.findByUser(userId, page, limit);
     return { complaints, total };
   }
+  async getMyBookingsId(
+    userId: string,
+    role: 'customer' | 'carOwner'
+  ): Promise<{ bookingIds: string[] }> {
+    const bookingIds = await this._complaintRepository.findBookingsByUser(userId);
+    return bookingIds;
+  }
 
   async getAllComplaints(
     page: number,
