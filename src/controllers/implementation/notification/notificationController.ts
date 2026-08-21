@@ -22,7 +22,7 @@ class NotificationController implements INotificationController {
         success: true,
         data: notification,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -46,7 +46,7 @@ class NotificationController implements INotificationController {
         success: true,
         data: result,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -68,7 +68,7 @@ class NotificationController implements INotificationController {
         success: true,
         // data: updated,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -78,11 +78,11 @@ class NotificationController implements INotificationController {
       const notifId = req.query.notifId as string;
       if (!notifId) {
         throw new ApiError(StatusCode.BAD_REQUEST, MESSAGES.ERROR.MISSING_FIELDS);
-        res.status(StatusCode.BAD_REQUEST).json({
-          success: false,
-          message: 'notifid is required',
-        });
-        return;
+        // res.status(StatusCode.BAD_REQUEST).json({
+        //   success: false,
+        //   message: 'notifid is required',
+        // });
+        // return;
       }
 
       await this._notificationService.markAsRead(notifId);
@@ -100,11 +100,11 @@ class NotificationController implements INotificationController {
 
       if (!userId) {
         throw new ApiError(StatusCode.BAD_REQUEST, MESSAGES.ERROR.MISSING_FIELDS);
-        res.status(StatusCode.BAD_REQUEST).json({
-          success: false,
-          message: 'userId is required',
-        });
-        return;
+        // res.status(StatusCode.BAD_REQUEST).json({
+        //   success: false,
+        //   message: 'userId is required',
+        // });
+        // return;
       }
 
       const count = await this._notificationService.getUnReadCount(userId);
@@ -113,7 +113,7 @@ class NotificationController implements INotificationController {
         success: true,
         count,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }

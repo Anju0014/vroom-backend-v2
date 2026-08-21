@@ -86,7 +86,7 @@ class CarOwnerCarsController implements ICarOwnerCarsController {
         message: MESSAGES.SUCCESS.CAR_UPLOADED,
         car: newCar,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -111,7 +111,7 @@ class CarOwnerCarsController implements ICarOwnerCarsController {
       const response: CarListResponseDTO = { cars, total };
 
       res.status(StatusCode.OK).json({ success: true, ...response });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -134,7 +134,7 @@ class CarOwnerCarsController implements ICarOwnerCarsController {
         message: 'Bookings fetched successfully',
         data: bookings,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -171,7 +171,7 @@ class CarOwnerCarsController implements ICarOwnerCarsController {
         message: MESSAGES.SUCCESS.AVAILABLE_DATES_UPDATED,
         data: car,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -188,7 +188,7 @@ class CarOwnerCarsController implements ICarOwnerCarsController {
         message: MESSAGES.SUCCESS.CAR_DELETED || 'Car deleted successfully',
         car: deletedCar,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -260,7 +260,7 @@ class CarOwnerCarsController implements ICarOwnerCarsController {
         message: MESSAGES.SUCCESS.CAR_UPDATED,
         car: updatedCar,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -278,7 +278,7 @@ class CarOwnerCarsController implements ICarOwnerCarsController {
       }
       // const bookingDTOs = CarMapper.toCarBookingDTO(booking);
       res.status(StatusCode.OK).json({ success: true, booking });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }

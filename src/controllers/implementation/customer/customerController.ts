@@ -24,7 +24,7 @@ class CustomerContoller implements ICustomerController {
         message: MESSAGES.SUCCESS.OTP_SENT,
         data: customer,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -37,7 +37,7 @@ class CustomerContoller implements ICustomerController {
         success: true,
         message: MESSAGES.SUCCESS.OTP_VERIFIED,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -53,7 +53,7 @@ class CustomerContoller implements ICustomerController {
         success: true,
         message: MESSAGES.SUCCESS.OTP_RESENT,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -80,7 +80,7 @@ class CustomerContoller implements ICustomerController {
         message: MESSAGES.SUCCESS.LOGIN_SUCCESS,
         ...CustomerMapper.toLoginDTO(customer, accessToken),
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -99,7 +99,7 @@ class CustomerContoller implements ICustomerController {
       res.cookie('accessToken', accessToken, getCookieOptions(false));
 
       res.status(StatusCode.OK).json({ success: true, accessToken });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -115,7 +115,7 @@ class CustomerContoller implements ICustomerController {
         success: true,
         message: MESSAGES.SUCCESS.PASSWORD_RESET_SENT,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -132,7 +132,7 @@ class CustomerContoller implements ICustomerController {
         success: true,
         message: MESSAGES.SUCCESS.PASSWORD_RESET_SUCCESSFULLY,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -150,7 +150,7 @@ class CustomerContoller implements ICustomerController {
         success: true,
         message: MESSAGES.SUCCESS.PASSWORD_UPDATE_SUCCESS,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -173,7 +173,7 @@ class CustomerContoller implements ICustomerController {
         success: true,
         message: MESSAGES.SUCCESS.LOGOUT_SUCCESS,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -207,7 +207,7 @@ class CustomerContoller implements ICustomerController {
         message: MESSAGES.SUCCESS.LOGIN_SUCCESS,
         ...CustomerMapper.toLoginDTO(customer, accessToken),
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -223,7 +223,7 @@ class CustomerContoller implements ICustomerController {
         success: true,
         customer,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -252,7 +252,7 @@ class CustomerContoller implements ICustomerController {
         message: MESSAGES.SUCCESS.PROFILE_UPDATED,
         updatedCustomer,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -279,7 +279,7 @@ class CustomerContoller implements ICustomerController {
         success: true,
         message: MESSAGES.SUCCESS.ID_PROOF_UPDATED,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -290,7 +290,7 @@ class CustomerContoller implements ICustomerController {
       const { userId } = req.params;
       const status = await this._customerService.checkBlockStatus(userId);
       res.status(StatusCode.OK).json({ blockStatus: status });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }

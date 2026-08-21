@@ -50,7 +50,7 @@ class CarOwnerBookingController implements ICarOwnerBookingController {
         success: true,
         ...response,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -88,7 +88,7 @@ class CarOwnerBookingController implements ICarOwnerBookingController {
         success: true,
         url,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -106,7 +106,7 @@ class CarOwnerBookingController implements ICarOwnerBookingController {
         success: true,
         message: 'Car marked as received successfully',
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -124,7 +124,7 @@ class CarOwnerBookingController implements ICarOwnerBookingController {
         message: MESSAGES.SUCCESS.STATS_RETRIEVED ?? 'Vroom stats retrieved successfully',
         data: stats,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -170,7 +170,7 @@ class CarOwnerBookingController implements ICarOwnerBookingController {
           limit,
         },
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -207,7 +207,7 @@ class CarOwnerBookingController implements ICarOwnerBookingController {
       res.json({
         url: accountLink.url,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
 
       // res.status(StatusCode.INTERNAL_SERVER_ERROR).json({

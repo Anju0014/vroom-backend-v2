@@ -21,7 +21,7 @@ class ChatController implements IChatController {
       logger.info(',,,,,,,,,,,,,,,,,,,,,,,,,,,,,,', roomId);
       const messages = await this._chatService.fetchMessages(roomId);
       res.status(StatusCode.OK).json(messages);
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -36,7 +36,7 @@ class ChatController implements IChatController {
       const chats = await this._chatService.fetchOwnerChats(ownerId);
       logger.info('ChatService', chats);
       res.status(StatusCode.OK).json(chats);
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -51,7 +51,7 @@ class ChatController implements IChatController {
       const chats = await this._chatService.fetchCustomerChats(customerId);
       logger.info('ChatService', chats);
       res.status(StatusCode.OK).json(chats);
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }

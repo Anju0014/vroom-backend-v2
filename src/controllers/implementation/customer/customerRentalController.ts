@@ -46,7 +46,7 @@ class CustomerRentalController implements ICustomerRentalController {
         parseFloat(maxDistance as string)
       );
       res.status(StatusCode.OK).json({ success: true, data: cars });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -56,7 +56,7 @@ class CustomerRentalController implements ICustomerRentalController {
       logger.info('featuredcars');
       const cars = await this._customerRentalService.getFeaturedCars();
       res.status(StatusCode.OK).json({ success: true, data: cars });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -106,7 +106,7 @@ class CustomerRentalController implements ICustomerRentalController {
       logger.info('Cars:', cars, 'Total:', total);
 
       res.status(StatusCode.OK).json({ data: cars, total });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -123,7 +123,7 @@ class CustomerRentalController implements ICustomerRentalController {
         // data: CustomerCarMapper.toCarDetailDTO(car)
         data: car,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -142,7 +142,7 @@ class CustomerRentalController implements ICustomerRentalController {
         // data: CustomerCarMapper.toBookedDateRangeDTO(bookedRanges)
         data: bookedRanges,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -177,7 +177,7 @@ class CustomerRentalController implements ICustomerRentalController {
       logger.info(true);
       res.json({ available: true });
       return;
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -187,7 +187,7 @@ class CustomerRentalController implements ICustomerRentalController {
       logger.info('pending creation');
       const bookingId = await this._customerRentalService.createPendingBooking(req.body);
       res.status(StatusCode.CREATED).json({ success: true, bookingId });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -214,7 +214,7 @@ class CustomerRentalController implements ICustomerRentalController {
       await booking.save();
 
       res.status(StatusCode.OK).json({ message: 'Booking updated', booking });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -236,7 +236,7 @@ class CustomerRentalController implements ICustomerRentalController {
       await this._customerRentalService.confirmBooking(bookingId, transactionId, paymentMethod);
       const receiptKey = await generateAndUploadReceipt(bookingId);
       res.status(StatusCode.OK).json({ success: true, bookingId, receiptKey });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -246,7 +246,7 @@ class CustomerRentalController implements ICustomerRentalController {
     try {
       await this._customerRentalService.failedBooking(bookingId);
       res.status(StatusCode.OK).json({ success: true });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -263,7 +263,7 @@ class CustomerRentalController implements ICustomerRentalController {
       });
 
       res.status(StatusCode.OK).json({ success: true });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }

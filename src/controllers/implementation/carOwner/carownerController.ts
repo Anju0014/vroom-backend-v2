@@ -105,7 +105,7 @@ class CarOwnerController implements ICarOwnerController {
       res.cookie('refreshToken', refreshToken, getCookieOptions(true));
       res.cookie('accessToken', accessToken, getCookieOptions(false));
       res.status(StatusCode.OK).json({ success: true, accessToken });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -125,7 +125,7 @@ class CarOwnerController implements ICarOwnerController {
         message: MESSAGES.SUCCESS.COMPLETED_REGISTRATION_FORM,
         completeOwner, //carOwnerMapper.ToDtoProfile
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -140,7 +140,7 @@ class CarOwnerController implements ICarOwnerController {
       res
         .status(StatusCode.OK)
         .json({ success: true, message: MESSAGES.SUCCESS.PASSWORD_RESET_SENT });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -158,7 +158,7 @@ class CarOwnerController implements ICarOwnerController {
         success: true,
         message: MESSAGES.SUCCESS.PASSWORD_RESET_SUCCESSFULLY,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -174,7 +174,7 @@ class CarOwnerController implements ICarOwnerController {
         throw new ApiError(StatusCode.BAD_REQUEST, MESSAGES.ERROR.MISSING_FIELDS);
       }
       res.status(StatusCode.OK).json(result);
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -195,7 +195,7 @@ class CarOwnerController implements ICarOwnerController {
         success: true,
         message: MESSAGES.SUCCESS.LOGOUT_SUCCESS,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -233,7 +233,7 @@ class CarOwnerController implements ICarOwnerController {
         accessToken,
         user: CarOwnerMapper.toPublicDTO(carOwner),
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -252,7 +252,7 @@ class CarOwnerController implements ICarOwnerController {
         success: true,
         carOwner,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -279,7 +279,7 @@ class CarOwnerController implements ICarOwnerController {
         message: MESSAGES.SUCCESS.PROFILE_UPDATED,
         updatedOwner,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -291,7 +291,7 @@ class CarOwnerController implements ICarOwnerController {
       const status = await this._carOwnerService.checkBlockStatus(userId);
 
       res.status(StatusCode.OK).json({ blockStatus: status });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }

@@ -40,7 +40,7 @@ class CustomerDashBoardController implements ICustomerDashBoardController {
         total,
       });
       return;
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -53,7 +53,7 @@ class CustomerDashBoardController implements ICustomerDashBoardController {
       await generateAndUploadReceipt(bookingId);
       logger.info('booking data', booking);
       res.status(StatusCode.OK).json({ success: true });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -84,11 +84,11 @@ class CustomerDashBoardController implements ICustomerDashBoardController {
 
       if (!wallet) {
         throw new ApiError(StatusCode.BAD_REQUEST, MESSAGES.ERROR.MISSING_FIELDS);
-        res.status(StatusCode.NOT_FOUND).json({
-          success: false,
-          message: 'Wallet not found',
-        });
-        return;
+        // res.status(StatusCode.NOT_FOUND).json({
+        //   success: false,
+        //   message: 'Wallet not found',
+        // });
+        // return;
       }
 
       const total = await this._customerDashService.getCustomerWalletTransactionCount(userId);
@@ -103,7 +103,7 @@ class CustomerDashBoardController implements ICustomerDashBoardController {
           limit,
         },
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }

@@ -45,7 +45,7 @@ class AdminController implements IAdminController {
         message: MESSAGES.SUCCESS.LOGIN_SUCCESS,
         ...AdminMapper.toLoginResponse(admin, accessToken),
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -69,7 +69,7 @@ class AdminController implements IAdminController {
         success: true,
         message: MESSAGES.SUCCESS.LOGOUT_SUCCESS,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -92,7 +92,7 @@ class AdminController implements IAdminController {
       res.cookie('refreshToken', refreshToken, getCookieOptions(true));
       res.cookie('accessToken', accessToken, getCookieOptions(false));
       res.status(StatusCode.OK).json({ success: true, accessToken });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -110,7 +110,7 @@ class AdminController implements IAdminController {
         data: CustomerMapper.toDTOList(customers),
         total,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -128,7 +128,7 @@ class AdminController implements IAdminController {
         data: CarOwnerMapper.toDTOList(carOwners),
         total,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -152,7 +152,7 @@ class AdminController implements IAdminController {
         message: MESSAGES.SUCCESS.STATUS_UPDATED || 'Customer status updated successfully',
         user: updatedCustomer,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }

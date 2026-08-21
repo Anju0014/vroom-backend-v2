@@ -31,7 +31,7 @@ class AdminOwnerController implements IAdminOwnerController {
         data: carOwners.map(AdminOwnerMapper.toOwnerVerifyDTO),
         total,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -53,7 +53,7 @@ class AdminOwnerController implements IAdminOwnerController {
         data: cars.map(AdminOwnerMapper.toCarVerifyDetailDTO),
         total,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -75,7 +75,7 @@ class AdminOwnerController implements IAdminOwnerController {
         data: cars.map(AdminOwnerMapper.toCarVerifyDetailDTO),
         total,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -97,7 +97,7 @@ class AdminOwnerController implements IAdminOwnerController {
         data: bookings.map(AdminOwnerMapper.toBookingListDTO),
         total,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -125,7 +125,7 @@ class AdminOwnerController implements IAdminOwnerController {
         message: MESSAGES.SUCCESS.STATUS_UPDATED || 'Owner status updated successfully',
         data: updatedOwner,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -144,7 +144,7 @@ class AdminOwnerController implements IAdminOwnerController {
         message: MESSAGES.SUCCESS.STATUS_UPDATED || 'Owner status updated successfully',
         user: updatedUser,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -164,7 +164,7 @@ class AdminOwnerController implements IAdminOwnerController {
         message: MESSAGES.SUCCESS.STATUS_UPDATED || 'Car status updated successfully',
         car: updatedCar,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -188,7 +188,7 @@ class AdminOwnerController implements IAdminOwnerController {
         message: MESSAGES.SUCCESS.STATUS_UPDATED || 'Car status updated successfully',
         car: updatedCar,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -202,7 +202,7 @@ class AdminOwnerController implements IAdminOwnerController {
         message: MESSAGES.SUCCESS.STATS_RETRIEVED ?? 'Vroom stats retrieved successfully',
         data: stats,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -214,7 +214,7 @@ class AdminOwnerController implements IAdminOwnerController {
         success: true,
         data: wallets,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -229,7 +229,7 @@ class AdminOwnerController implements IAdminOwnerController {
         success: true,
         data: payout,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(error);
     }
   }

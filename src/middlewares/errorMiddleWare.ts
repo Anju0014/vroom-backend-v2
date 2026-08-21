@@ -7,7 +7,7 @@ export const errorMiddleware = (
   err: unknown,
   req: Request,
   res: Response,
-  next: NextFunction
+ _next: NextFunction
 ): void => {
   logger.error(' Error:', err);
 
@@ -19,8 +19,19 @@ export const errorMiddleware = (
     return;
   }
 
+    if (err instanceof Error) {
+    logger.error(err.stack);
+
+    res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: err.message,
+    });
+    return;
+  }
+  
   res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
     success: false,
     message: 'Something went wrong',
   });
+  
 };
